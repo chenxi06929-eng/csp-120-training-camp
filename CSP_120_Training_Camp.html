@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSP 120 训练营 · Level Up</title>
+<style>
+:root{--bg:#f7f7f1;--paper:#fffefa;--ink:#29352f;--muted:#78847c;--green:#6b9b7d;--green2:#e5f0e7;--lav:#eeeafa;--yellow:#fbf0cf;--line:#e8e9df;--pink:#f8e9e8;--shadow:0 10px 30px rgba(49,70,55,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
+button,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:10px 15px;background:var(--green);color:white;font-weight:650}button.secondary{background:#f0f2eb;color:var(--ink);border:1px solid var(--line)}button.soft{background:var(--green2);color:#416c50}button:disabled{opacity:.45;cursor:not-allowed}
+.app{max-width:1440px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:15px;background:var(--green2);display:grid;place-items:center;font-size:24px}.brand h1{font-size:20px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.topright{display:flex;gap:10px;align-items:center}.pill{background:white;border:1px solid var(--line);padding:8px 12px;border-radius:999px;font-size:13px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:20px}.sidebar,.panel,.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}.sidebar{padding:18px;height:max-content;position:sticky;top:16px}.side-label{font-size:11px;color:#9aa39b;letter-spacing:1.5px;margin:12px 10px 8px}.nav{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;color:#59665e;padding:11px 12px;border-radius:12px;font-weight:550}.nav.active{background:var(--green2);color:#386849}.nav:hover{background:#f2f5ef}.side-note{margin-top:20px;padding:13px;background:var(--lav);border-radius:14px;font-size:12px;color:#665e85}.main{min-width:0}.hero{background:linear-gradient(115deg,#e6f1e7,#f0eefb);border-radius:22px;padding:23px 25px;display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:18px}.eyebrow{font-size:12px;color:#66826d;font-weight:700;letter-spacing:1px}.hero h2{font-size:25px;margin:5px 0}.hero p{margin:0;color:#68766c}.hero-right{text-align:right;min-width:145px}.days{font-size:34px;font-weight:800;line-height:1.2}.days small{font-size:13px;font-weight:500;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{padding:15px 17px;background:var(--paper);border:1px solid var(--line);border-radius:16px}.stat .k{font-size:12px;color:var(--muted)}.stat .v{font-size:23px;font-weight:750;margin-top:3px}.stat .s{font-size:11px;color:#98a098}.content-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:16px}.panel{padding:20px;margin-bottom:16px}.panel h3{margin:0 0 5px;font-size:17px}.sub{color:var(--muted);font-size:12px}.progress{height:9px;border-radius:20px;background:#edf0e9;overflow:hidden;margin:12px 0}.progress span{display:block;height:100%;background:var(--green);border-radius:20px;width:0;transition:.25s}.schedule{display:grid;gap:10px;margin-top:15px}.slot{display:flex;gap:12px;align-items:flex-start;padding:11px;background:#fafbf7;border:1px solid #eff0e9;border-radius:13px}.time{font-size:11px;color:var(--green);font-weight:750;min-width:94px;padding-top:2px}.slot strong{font-size:13px}.slot p{margin:2px 0 0;color:var(--muted);font-size:12px}.timer{text-align:center;background:#f8faf5;border-radius:16px;padding:17px;margin:14px 0}.clock{font-size:43px;font-weight:800;letter-spacing:2px;font-variant-numeric:tabular-nums}.timer-actions{display:flex;justify-content:center;gap:8px;margin-top:10px}.timer-actions button{padding:8px 12px;font-size:12px}.task{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f0f0e9;font-size:13px}.task:last-child{border:0}.task input{accent-color:var(--green);margin-top:4px;width:16px;height:16px}.tag{font-size:10px;padding:3px 8px;border-radius:99px;background:var(--yellow);color:#8a7134;white-space:nowrap}.tag.green{background:var(--green2);color:#527a5d}.tag.purple{background:var(--lav);color:#756a9b}.section{display:none}.section.active{display:block}.lesson-box{background:#f8faf5;border:1px solid var(--line);padding:15px;border-radius:14px;margin:12px 0}.lesson-box h4{margin:0 0 7px}.lesson-box p{margin:5px 0;color:#59665e;font-size:13px}.code{background:#202a26;color:#e7f0e8;padding:14px;border-radius:13px;overflow:auto;font:13px/1.65 Consolas,monospace;white-space:pre}.editor{width:100%;min-height:260px;resize:vertical;background:#202a26;color:#e7f0e8;border:0;border-radius:14px;padding:15px;font:13px/1.65 Consolas,monospace;outline:none;tab-size:4}.editor:focus{box-shadow:0 0 0 2px #a9cbb1}.editor-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.notice{padding:12px 14px;border-radius:12px;background:var(--yellow);color:#79652f;font-size:12px;margin:12px 0}.result{background:#f5f7f2;border:1px solid var(--line);border-radius:13px;padding:13px;font-size:13px;white-space:pre-wrap;min-height:56px}.problem{border:1px solid var(--line);border-radius:14px;padding:15px;margin:12px 0}.problem h4{margin:0 0 5px}.problem pre{background:#f5f6f0;padding:10px;border-radius:9px;overflow:auto;font:12px Consolas,monospace}.answer{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fffefa;margin:7px 0}.day-list{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.day{padding:10px 5px;text-align:center;border:1px solid var(--line);border-radius:12px;background:#fffefa;color:var(--ink);font-size:12px}.day.current{background:var(--green2);border-color:#9cbea4}.day.done{background:#f0f1ed;color:#929b93}.day b{display:block;font-size:15px}.muted{color:var(--muted)}.mistake{padding:12px;border:1px solid var(--line);border-radius:12px;margin:9px 0;font-size:13px}.empty{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static}.side-nav{display:grid;grid-template-columns:repeat(3,1fr)}.side-label,.side-note{display:none}.content-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.app{padding:12px}.hero{padding:18px;align-items:flex-start}.hero h2{font-size:20px}.hero-right{min-width:90px}.days{font-size:27px}.top{align-items:flex-start}.topright{flex-direction:column;align-items:flex-end}.day-list{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+ <div class="brand"><div class="logo">🌱</div><div><h1>CSP 120 训练营</h1><p>LEVEL UP · 每天进步一点点</p></div></div>
+ <div class="topright"><span class="pill">🎯 目标：120 分</span><span class="pill" id="todayLabel">DAY 01 · 11月2日</span></div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+ <div class="side-label">TRAINING CAMP</div>
+ <div class="side-nav">
+  <button class="nav active" data-tab="home">🏡 今日训练</button>
+  <button class="nav" data-tab="lesson">📚 知识课堂</button>
+  <button class="nav" data-tab="practice">🧩 闯关练习</button>
+  <button class="nav" data-tab="editor">💻 代码实验室</button>
+  <button class="nav" data-tab="plan">🗓️ 41天路线</button>
+  <button class="nav" data-tab="mistakes">📝 我的错题本</button>
+ </div>
+ <div class="side-note">✨ 学习小提醒<br>不要追求一次就会。能独立写出来，才算真正掌握。</div>
+</aside>
+<main class="main">
+<section class="hero">
+ <div><div class="eyebrow">YOUR MISSION · 2026.12.13</div><h2>今天也向 120 分靠近一点！</h2><p>从基础开始，稳稳打怪升级。今天的任务是 C++ 基础编程。</p></div>
+ <div class="hero-right"><div class="days" id="daysLeft">41 <small>天</small></div><div class="sub">距离考试</div></div>
+</section>
+<div class="stats">
+ <div class="stat"><div class="k">今日学习时长</div><div class="v" id="studied">0 min</div><div class="s">目标 120 分钟</div></div>
+ <div class="stat"><div class="k">今日任务</div><div class="v" id="taskCount">0 / 4</div><div class="s">完成即可点亮进度</div></div>
+ <div class="stat"><div class="k">累计练习题</div><div class="v" id="solved">0</div><div class="s">持续积累</div></div>
+ <div class="stat"><div class="k">错题收集</div><div class="v" id="mistakeCount">0</div><div class="s">错题也是升级经验</div></div>
+</div>
+
+<section id="home" class="section active">
+<div class="content-grid">
+ <div class="panel">
+  <h3>⏰ 今日 120 分钟安排</h3><div class="sub">按阶段学习，专注一件事</div>
+  <div class="schedule">
+   <div class="slot"><div class="time">00—20 MIN</div><div><strong>📖 知识点讲解</strong><p>输入输出、变量、数据类型</p></div><span class="tag green">20 min</span></div>
+   <div class="slot"><div class="time">20—40 MIN</div><div><strong>🔍 代码拆解</strong><p>理解 if 判断与循环执行过程</p></div><span class="tag">20 min</span></div>
+   <div class="slot"><div class="time">40—100 MIN</div><div><strong>💻 独立编程</strong><p>同一知识点多道题，逐级闯关</p></div><span class="tag purple">60 min</span></div>
+   <div class="slot"><div class="time">100—120 MIN</div><div><strong>📝 测试与复盘</strong><p>核对结果、记录错误、重做薄弱题</p></div><span class="tag green">20 min</span></div>
+  </div>
+  <div class="timer">
+   <div class="sub">FOCUS TIMER · 当前专注倒计时</div><div class="clock" id="clock">120:00</div>
+   <div class="sub" id="timerStage">准备开始 · 知识点讲解</div>
+   <div class="timer-actions"><button id="startTimer">开始学习</button><button class="secondary" id="pauseTimer">暂停</button><button class="secondary" id="resetTimer">重置</button></div>
+  </div>
+  <div class="sub">提示：倒计时按 120 分钟总时长运行；阶段切换可参考上方时间安排。</div>
+ </div>
+ <div class="panel">
+  <h3>🎯 今日任务清单</h3><div class="sub">完成一项，点亮一颗星</div>
+  <div id="tasks"></div>
+  <div class="progress"><span id="taskProgress"></span></div>
+  <div class="sub" id="taskProgressText">今天还没有完成任务，慢慢来。</div>
+  <div class="lesson-box"><h4>🌼 今日通关目标</h4><p>能独立写出输入输出、条件判断、循环，并完成 3 道基础题。</p></div>
+  <button class="soft" style="width:100%" onclick="showTab('lesson')">进入今日课堂 →</button>
+ </div>
+</div>
+</section>
+
+<section id="lesson" class="section">
+ <div class="panel">
+  <div class="eyebrow">DAY 01 · C++ FOUNDATION</div><h3>第一关：认识 C++ 程序</h3><div class="sub">目标：读懂程序结构，并能独立写出最基础的输入输出。</div>
+  <div class="lesson-box"><h4>1. 一个最基础的 C++ 程序</h4><div class="code">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    cout &lt;&lt; "Hello CSP!" &lt;&lt; endl;
+    return 0;
+}</div><p><b>记住：</b>main 是程序入口；cin 负责输入；cout 负责输出；每条普通语句通常以分号结束。</p></div>
+  <div class="lesson-box"><h4>2. 变量：给数据找一个盒子</h4><p><b>int</b>：整数；<b>long long</b>：范围更大的整数；<b>double</b>：小数；<b>char</b>：单个字符；<b>string</b>：字符串；<b>bool</b>：真假。</p><div class="code">int age;
+cin &gt;&gt; age;
+cout &lt;&lt; age &lt;&lt; endl;</div><p>输入多个变量：<code>cin &gt;&gt; a &gt;&gt; b;</code></p></div>
+  <div class="lesson-box"><h4>3. if 判断：让程序做选择</h4><div class="code">if (score &gt;= 60) {
+    cout &lt;&lt; "Pass";
+} else {
+    cout &lt;&lt; "Fail";
+}</div><p>注意 <code>==</code> 是比较是否相等，<code>=</code> 是赋值。不要混淆。</p></div>
+  <div class="lesson-box"><h4>4. for 循环：重复执行</h4><div class="code">for (int i = 1; i &lt;= 5; i++) {
+    cout &lt;&lt; i &lt;&lt; endl;
+}</div><p>依次理解三部分：从哪里开始；什么条件下继续；每轮结束后怎么变化。</p></div>
+  <div class="lesson-box"><h4>5. 累加与计数</h4><div class="code">int sum = 0;
+for (int i = 1; i &lt;= n; i++) {
+    sum = sum + i;
+}</div><p>累加器先初始化为 0；计数器也先初始化为 0，满足条件时再加 1。</p></div>
+  <div class="notice">学习方法：先合上讲解，尝试自己复述每段代码的作用，再进入练习。不要只看懂就算学会。</div>
+  <button onclick="showTab('practice')">我学完了，去闯关 →</button>
+ </div>
+</section>
+
+<section id="practice" class="section">
+ <div class="panel">
+  <h3>🧩 今日闯关：循环与条件判断</h3><div class="sub">同一知识点多题巩固。先独立写代码，再核对运行结果。</div>
+  <div class="problem"><span class="tag green">第 1 题 · 基础</span><h4>求 1 到 n 的偶数之和</h4><p>输入一个正整数 n，输出 1 到 n（含 n）之间所有偶数的和。</p><b>输入样例</b><pre>10</pre><b>输出样例</b><pre>30</pre><p class="sub">提示：循环遍历每个数，判断它是否为偶数，再累加。</p><button class="soft" onclick="loadProblem(0)">在代码实验室打开这题</button></div>
+  <div class="problem"><span class="tag">第 2 题 · 进阶</span><h4>统计及格人数</h4><p>输入 n，接下来输入 n 个成绩。输出成绩大于等于 60 的人数。</p><b>输入样例</b><pre>5
+80 55 90 45 60</pre><b>输出样例</b><pre>3</pre><p class="sub">提示：设置 count，每次遇到及格成绩就加 1。</p><button class="soft" onclick="loadProblem(1)">在代码实验室打开这题</button></div>
+  <div class="problem"><span class="tag purple">第 3 题 · 挑战</span><h4>求最大值与最小值</h4><p>输入 n，接下来输入 n 个整数。输出最大值和最小值，中间用空格隔开。</p><b>输入样例</b><pre>5
+3 8 1 9 4</pre><b>输出样例</b><pre>9 1</pre><p class="sub">提示：用第一个输入值初始化最大值和最小值，再逐个比较更新。</p><button class="soft" onclick="loadProblem(2)">在代码实验室打开这题</button></div>
+ </div>
+</section>
+
+<section id="editor" class="section">
+ <div class="panel">
+  <h3>💻 代码实验室</h3><div class="sub">写代码、保存草稿、复制到 C++ 编译器运行，再回来核对结果。</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0"><label class="sub" for="problemSelect">当前题目</label><select id="problemSelect" class="answer" style="max-width:280px;margin:0" onchange="selectProblem(this.value)"><option value="0">第 1 题：偶数之和</option><option value="1">第 2 题：统计及格人数</option><option value="2">第 3 题：最大值与最小值</option></select></div>
+  <div class="sub" style="margin-bottom:7px">C++17 · 编辑区（自动保存到当前浏览器）</div>
+  <textarea id="editorCode" class="editor" spellcheck="false">#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+
+    // 在这里写你的代码
+
+    return 0;
+}</textarea>
+  <div class="editor-actions"><button id="copyCode">复制代码</button><button class="secondary" onclick="window.open('https://www.onlinegdb.com/online_c++_compiler','_blank')">打开在线 C++ 编译器 ↗</button><button class="soft" id="saveCode">保存草稿</button></div>
+  <div class="notice">真实编译说明：本网页目前不内置 C++ 编译器。点击“打开在线 C++ 编译器”，粘贴代码运行；将运行结果填入下面的核对框。本地核对只检查输出文本，不会执行你的 C++ 代码。</div>
+  <h3 style="font-size:15px;margin-top:18px">🧪 样例输出核对</h3>
+  <div class="sub" id="expectedText">本题预期输出：30</div>
+  <input class="answer" id="actualOutput" placeholder="把你实际运行得到的输出粘贴到这里">
+  <div class="editor-actions"><button id="checkOutput">核对输出</button><button class="secondary" id="markWrong">加入错题本</button></div>
+  <div class="result" id="checkResult">等待你运行代码并提交结果……</div>
+ </div>
+</section>
+
+<section id="plan" class="section">
+ <div class="panel"><h3>🗓️ 41 天升级路线</h3><div class="sub">每天 2 小时。日期与考试日按 2026 年 12 月 13 日安排；后续课程可按掌握情况调整。</div><div class="progress"><span style="width:2.4%"></span></div><div class="day-list" id="dayGrid"></div><div class="lesson-box"><h4>阶段路线</h4><p><b>11.2—11.8 基础重建：</b>语法、输入输出、循环、数组、字符串、函数。</p><p><b>11.9—11.22 高频算法：</b>模拟、排序、前缀和、差分、二分、STL、DFS、BFS、贪心。</p><p><b>11.23—12.3 综合训练：</b>动态规划入门、图论、并查集、综合题。</p><p><b>12.4—12.12 真题冲刺：</b>历年题、限时训练、错题回炉与考试策略。</p></div></div>
+</section>
+
+<section id="mistakes" class="section">
+ <div class="panel"><h3>📝 我的错题本</h3><div class="sub">把踩过的坑留下来，复习时再把它们逐个攻克。</div><div id="mistakeList" class="empty">还没有错题。做题时遇到卡点，可以主动加入错题本。</div></div>
+</section>
+</main>
+</div>
+</div>
+<script>
+const tasks=["理解 C++ 程序结构与输入输出","掌握变量、数据类型和 if 判断","独立写出 for 循环与累加/计数","完成今天的 3 道练习并复盘"];
+const problems=[
+ {name:"偶数之和",input:"10",expected:"30",starter:"#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    // 在这里写你的代码\n\n    return 0;\n}"},
+ {name:"统计及格人数",input:"5\n80 55 90 45 60",expected:"3",starter:"#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    // 在这里写你的代码\n\n    return 0;\n}"},
+ {name:"最大值与最小值",input:"5\n3 8 1 9 4",expected:"9 1",starter:"#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    // 在这里写你的代码\n\n    return 0;\n}"}
+];
+let activeProblem=0, remaining=7200, timerId=null, elapsed=0;
+const $=id=>document.getElementById(id);
+let completed=JSON.parse(localStorage.getItem("csp_tasks")||"[]");
+let mistakes=JSON.parse(localStorage.getItem("csp_mistakes")||"[]");
+let solved=Number(localStorage.getItem("csp_solved")||0);
+function renderTasks(){ $("tasks").innerHTML=tasks.map((t,i)=>`<label class="task"><input type="checkbox" ${completed.includes(i)?"checked":""} onchange="toggleTask(${i},this.checked)"><span>${t}</span></label>`).join("");$("taskCount").textContent=`${completed.length} / 4`;$("taskProgress").style.width=(completed.length/4*100)+"%";$("taskProgressText").textContent=completed.length===4?"🎉 今日任务全部点亮！":"再完成 "+(4-completed.length)+" 项就通关啦。"}
+function toggleTask(i,on){completed=on?[...new Set([...completed,i])]:completed.filter(x=>x!==i);localStorage.setItem("csp_tasks",JSON.stringify(completed));renderTasks()}
+function showTab(tab){document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===tab));document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));}
+document.querySelectorAll(".nav").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function stage(){let used=7200-remaining;if(used<1200)return"知识点讲解";if(used<2400)return"代码拆解";if(used<6000)return"独立编程";return"测试与复盘"}
+function paintTimer(){$("clock").textContent=fmt(remaining);$("timerStage").textContent=remaining===0?"今日专注时间结束！":`当前阶段 · ${stage()}`;$("studied").textContent=Math.floor(elapsed/60)+" min"}
+$("startTimer").onclick=()=>{if(timerId||remaining<=0)return;timerId=setInterval(()=>{remaining=Math.max(0,remaining-1);elapsed++;paintTimer();if(remaining===0){clearInterval(timerId);timerId=null;alert("120 分钟完成！记得复盘今天的错题。")}},1000)};
+$("pauseTimer").onclick=()=>{clearInterval(timerId);timerId=null};
+$("resetTimer").onclick=()=>{clearInterval(timerId);timerId=null;remaining=7200;elapsed=0;paintTimer()};
+function loadProblem(i){activeProblem=i;$("problemSelect").value=i;$("editorCode").value=localStorage.getItem("csp_code_"+i)||problems[i].starter;$("expectedText").textContent="本题样例输入："+problems[i].input.replace(/\n/g," / ")+"；预期输出："+problems[i].expected;$("actualOutput").value="";$("checkResult").textContent="等待你运行代码并提交结果……";showTab("editor")}
+function selectProblem(v){loadProblem(Number(v))}
+$("editorCode").addEventListener("input",()=>localStorage.setItem("csp_code_"+activeProblem,$("editorCode").value));
+$("saveCode").onclick=()=>{localStorage.setItem("csp_code_"+activeProblem,$("editorCode").value);$("checkResult").textContent="草稿已保存到当前浏览器。"};
+$("copyCode").onclick=async()=>{try{await navigator.clipboard.writeText($("editorCode").value);$("checkResult").textContent="代码已复制。现在可以打开在线编译器粘贴运行。"}catch(e){$("checkResult").textContent="浏览器未允许自动复制，请手动选中代码复制。"}};
+function normalize(s){return s.trim().split(/\s+/).join(" ")}
+$("checkOutput").onclick=()=>{let got=normalize($("actualOutput").value),want=normalize(problems[activeProblem].expected);if(!got){$("checkResult").textContent="请先把实际运行结果粘贴进来。";return}if(got===want){$("checkResult").textContent="🎉 样例输出一致！注意：这只代表当前样例通过，不等于整道题所有测试点都通过。";solved++;localStorage.setItem("csp_solved",solved);$("solved").textContent=solved;}else{$("checkResult").textContent="还不一致。检查循环边界、条件判断、累加/计数变量是否正确，再运行一次。"}};
+function addMistake(){let m={name:problems[activeProblem].name,code:$("editorCode").value.slice(0,500),date:new Date().toLocaleDateString("zh-CN")};mistakes.unshift(m);localStorage.setItem("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
+$("markWrong").onclick=addMistake;
+function renderMistakes(){$("mistakeCount").textContent=mistakes.length;if(!mistakes.length){$("mistakeList").className="empty";$("mistakeList").textContent="还没有错题。做题时遇到卡点，可以主动加入错题本。";return}$("mistakeList").className="";$("mistakeList").innerHTML=mistakes.map((m,i)=>`<div class="mistake"><b>${m.name}</b><span class="muted"> · ${m.date}</span><pre class="code" style="margin:8px 0">${escapeHtml(m.code)}</pre><button class="secondary" onclick="removeMistake(${i})">移除</button></div>`).join("")}
+function removeMistake(i){mistakes.splice(i,1);localStorage.setItem("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderDays(){let labels=["基础重建","基础重建","基础重建","基础重建","基础重建","基础重建","基础重建","模拟","排序","排序","前缀和","前缀和","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];$("dayGrid").innerHTML=labels.map((v,i)=>`<div class="day ${i===0?"current":""}"><b>${i+1}</b>${v}</div>`).join("")}
+let now=new Date(),exam=new Date("2026-12-13T00:00:00"),diff=Math.max(0,Math.ceil((exam-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000));$("daysLeft").innerHTML=diff+' <small>天</small>';$("todayLabel").textContent="DAY 01 · 11月2日";
+renderTasks();renderMistakes();renderDays();$("solved").textContent=solved;paintTimer();loadProblem(0);showTab("home");
+</script>
+</body>
+</html>
