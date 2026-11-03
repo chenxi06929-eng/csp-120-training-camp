@@ -45,7 +45,7 @@ button,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius
 </aside>
 <main class="main">
 <section class="hero">
- <div><div class="eyebrow">YOUR MISSION · 2026.12.13</div><h2>今天也向 120 分靠近一点！</h2><p>从基础开始，稳稳打怪升级。今天的任务是 C++ 基础编程。</p></div>
+ <div><div class="eyebrow">YOUR MISSION · 2026.12.13</div><h2>今天也向 120 分靠近一点！</h2><p id="todayMission">每天 00:00（北京时间）自动切换当天课程；所有日期都可自由查看。</p></div>
  <div class="hero-right"><div class="days" id="daysLeft">41 <small>天</small></div><div class="sub">距离考试</div></div>
 </section>
 <div class="stats">
@@ -78,7 +78,7 @@ button,textarea,select{font:inherit}button{cursor:pointer;border:0;border-radius
   <div class="progress"><span id="taskProgress"></span></div>
   <div class="sub" id="taskProgressText">今天还没有完成任务，慢慢来。</div>
   <div class="lesson-box"><h4>🌼 今日通关目标</h4><p>能独立写出输入输出、条件判断、循环，并完成 3 道基础题。</p></div>
-  <button class="soft" style="width:100%" onclick="showTab('lesson')">进入今日课堂 →</button>
+  <button class="soft" style="width:100%" onclick="openDay(todayDay)">进入今日课堂 →</button>
  </div>
 </div>
 </section>
@@ -203,7 +203,7 @@ function renderMistakes(){$("mistakeCount").textContent=mistakes.length;if(!mist
 function removeMistake(i){mistakes.splice(i,1);localStorage.setItem("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 const dayLabels=["C++基础","数组基础","字符串","函数","基础综合","基础综合","基础综合","模拟","排序","排序","前缀和","前缀和","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];
-function renderDays(){$("dayGrid").innerHTML=dayLabels.map((v,i)=>`<button type="button" class="day ${i===0?"current":""}" onclick="openDay(${i+1})" aria-label="打开第${i+1}天：${v}"><b>${i+1}</b>${v}</button>`).join("")}
+function renderDays(){$("dayGrid").innerHTML=dayLabels.map((v,i)=>`<button type="button" class="day ${i+1===todayDay?"current":""}" onclick="openDay(${i+1})" aria-label="打开第${i+1}天：${v}"><b>${i+1}</b>${v}</button>`).join("")}
 function closeDayModal(){$("dayModal").style.display="none"}
 function openDay(n){
  const title=dayLabels[n-1]||"学习计划";
@@ -245,7 +245,20 @@ for (int i = 1; i < n; i++)
  }
  $("dayModal").style.display="flex";
 }
-let now=new Date(),exam=new Date("2026-12-13T00:00:00"),diff=Math.max(0,Math.ceil((exam-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000));$("daysLeft").innerHTML=diff+' <small>天</small>';$("todayLabel").textContent="DAY 01 · 11月2日";
+let now=new Date(),exam=new Date("2026-12-13T00:00:00"),diff=Math.max(0,Math.ceil((exam-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000));$("daysLeft").innerHTML=diff+' <small>天</small>';function beijingDateParts(){
+ const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Shanghai",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+ const o={};parts.forEach(p=>o[p.type]=p.value);
+ return {y:Number(o.year),m:Number(o.month),d:Number(o.day),text:o.month+"月"+o.day+"日"};
+}
+const beijingToday=beijingDateParts();
+const startUTC=Date.UTC(2026,10,2),todayUTC=Date.UTC(beijingToday.y,beijingToday.m-1,beijingToday.d);
+const rawDay=Math.floor((todayUTC-startUTC)/86400000)+1;
+const todayDay=Math.max(1,Math.min(41,rawDay));
+const todayTopic=dayLabels[todayDay-1];
+const examUTC=Date.UTC(2026,11,13),diff=Math.max(0,Math.ceil((examUTC-todayUTC)/86400000));
+$("daysLeft").innerHTML=diff+" <small>天</small>";
+$("todayLabel").textContent="DAY "+String(todayDay).padStart(2,"0")+" · "+beijingToday.text;
+$("todayMission").textContent="今天是第 "+todayDay+" 天："+todayTopic+"。每天 00:00（北京时间）自动切换当天课程；过去和未来课程都可以随时点开。";
 renderTasks();renderMistakes();renderDays();$("solved").textContent=solved;paintTimer();loadProblem(0);showTab("home");
 </script>
 </body>
