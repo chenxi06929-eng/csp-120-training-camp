@@ -245,7 +245,7 @@ for (int i = 1; i < n; i++)
  }
  $("dayModal").style.display="flex";
 }
-let now=new Date(),exam=new Date("2026-12-13T00:00:00"),diff=Math.max(0,Math.ceil((exam-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000));$("daysLeft").innerHTML=diff+' <small>天</small>';function beijingDateParts(){
+function beijingDateParts(){
  const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Shanghai",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
  const o={};parts.forEach(p=>o[p.type]=p.value);
  return {y:Number(o.year),m:Number(o.month),d:Number(o.day),text:o.month+"月"+o.day+"日"};
