@@ -113,16 +113,7 @@ for (int i = 1; i &lt;= n; i++) {
  </div>
 </section>
 
-<section id="practice" class="section">
- <div class="panel">
-  <h3>🧩 今日闯关：循环与条件判断</h3><div class="sub">同一知识点多题巩固。先独立写代码，再核对运行结果。</div>
-  <div class="problem"><span class="tag green">第 1 题 · 基础</span><h4>求 1 到 n 的偶数之和</h4><p>输入一个正整数 n，输出 1 到 n（含 n）之间所有偶数的和。</p><b>输入样例</b><pre>10</pre><b>输出样例</b><pre>30</pre><p class="sub">提示：循环遍历每个数，判断它是否为偶数，再累加。</p><button class="soft" onclick="loadProblem(0)">在代码实验室打开这题</button></div>
-  <div class="problem"><span class="tag">第 2 题 · 进阶</span><h4>统计及格人数</h4><p>输入 n，接下来输入 n 个成绩。输出成绩大于等于 60 的人数。</p><b>输入样例</b><pre>5
-80 55 90 45 60</pre><b>输出样例</b><pre>3</pre><p class="sub">提示：设置 count，每次遇到及格成绩就加 1。</p><button class="soft" onclick="loadProblem(1)">在代码实验室打开这题</button></div>
-  <div class="problem"><span class="tag purple">第 3 题 · 挑战</span><h4>求最大值与最小值</h4><p>输入 n，接下来输入 n 个整数。输出最大值和最小值，中间用空格隔开。</p><b>输入样例</b><pre>5
-3 8 1 9 4</pre><b>输出样例</b><pre>9 1</pre><p class="sub">提示：用第一个输入值初始化最大值和最小值，再逐个比较更新。</p><button class="soft" onclick="loadProblem(2)">在代码实验室打开这题</button></div>
- </div>
-</section>
+<section id="practice" class="section"><div class="panel"><h3 id="practiceTitle">🧩 今日闯关</h3><div class="sub" id="practiceSubtitle">围绕当天知识点逐级练习。</div><div id="practiceList"></div></div></section>
 
 <section id="editor" class="section">
  <div class="panel">
@@ -207,6 +198,19 @@ function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;","
 const dayLabels=["C++基础","数组基础","字符串","函数","基础综合","基础综合","基础综合","模拟","排序","排序","前缀和","前缀和","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];
 let selectedDay=1;
 const dayOneLessonHTML=$("lesson").innerHTML;
+function renderWorkspace(n){
+ problems=dayProblemSets[n]||[];
+ const title=dayLabels[n-1]||"学习计划";
+ $("practiceTitle").textContent="🧩 DAY "+String(n).padStart(2,"0")+" 闯关："+title;
+ $("practiceSubtitle").textContent=problems.length?"每道题都对应本日知识点。点击题目即可带入代码实验室。":"这一天的专项题目尚未编写完成；这里不会拿其他日期的题目充数。";
+ $("practiceList").innerHTML=problems.length?problems.map((p,i)=>'<div class="problem"><span class="tag '+(i===0?"green":i===2?"purple":"")+'">第 '+(i+1)+' 题 · '+(["基础","进阶","挑战"][i]||"练习")+'</span><h4>'+p.name+'</h4><p>'+p.description+'</p><b>输入样例</b><pre>'+escapeHtml(p.input)+'</pre><b>输出样例</b><pre>'+escapeHtml(p.expected)+'</pre><p class="sub">提示：'+p.hint+'</p><button class="soft" onclick="loadProblem('+i+')">在代码实验室打开这题</button></div>').join(""):'<div class="empty">DAY '+n+' · '+title+'<br>课程主题已标记，专项讲解和题目还需要逐日补齐。</div>';
+ const sel=$("problemSelect");
+ sel.innerHTML=problems.map((p,i)=>'<option value="'+i+'">第 '+(i+1)+' 题：'+p.name+'</option>').join("");
+ const disabled=!problems.length;
+ ["editorCode","problemSelect","copyCode","saveCode","checkOutput","markWrong","actualOutput"].forEach(id=>$(id).disabled=disabled);
+ if(disabled){$("editorCode").value="// DAY "+n+" · "+title+"\n// 本日专项题目尚未上线。";$("editorCode").readOnly=true;$("expectedText").textContent="本日题目尚未上线，暂无样例输入与预期输出。";$("checkResult").textContent="请先学习已开放的专项课程。";}
+ else{$("editorCode").readOnly=false;loadProblem(0);}
+}
 function renderDays(){$("dayGrid").innerHTML=dayLabels.map((v,i)=>`<button type="button" class="day ${i+1===selectedDay?"current":""}" onclick="openDay(${i+1})" aria-label="打开第${i+1}天：${v}"><b>${i+1}</b>${v}</button>`).join("")}
 function closeDayModal(){$("dayModal").style.display="none"}
 function openDay(n){
@@ -272,6 +276,7 @@ for (int i = 1; i < n; i++)
  body.innerHTML='<div class="lesson-box"><h4>本日主题</h4><p>'+title+'</p><p>这一天已经开放自由查看路线。详细课程会随着训练营更新逐步补齐；你不需要等前一天打卡完成才能学习。</p></div><button class="secondary" onclick="closeDayModal()">知道了</button>';
  }
  selectedDay=n;
+ renderWorkspace(n);
  $("lesson").innerHTML=`<div class="panel"><div class="eyebrow">DAY ${String(n).padStart(2,"0")} · ${title}</div><h3>第 ${n} 天：${title}</h3><div class="sub">当前选中课程 · 你可以在「41天路线」中切换其他日期。</div>${body.innerHTML}</div>`;
  closeDayModal();
  renderDays();
@@ -291,7 +296,7 @@ const examUTC=Date.UTC(2026,11,13),diff=Math.max(0,Math.ceil((examUTC-todayUTC)/
 $("daysLeft").innerHTML=diff+" <small>天</small>";
 $("todayLabel").textContent="DAY "+String(todayDay).padStart(2,"0")+" · "+beijingToday.text;
 $("todayMission").textContent="今天是第 "+todayDay+" 天："+todayTopic+"。每天 00:00（北京时间）自动切换当天课程；过去和未来课程都可以随时点开。";
-renderTasks();renderMistakes();renderDays();$("solved").textContent=solved;paintTimer();loadProblem(0);openDay(todayDay);showTab("home");
+renderTasks();renderMistakes();renderDays();$("solved").textContent=solved;paintTimer();openDay(todayDay);showTab("home");
 </script>
 </body>
 </html>
