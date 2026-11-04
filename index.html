@@ -161,11 +161,25 @@ int main() {
 
 <script>
 const tasks=["理解 C++ 程序结构与输入输出","掌握变量、数据类型和 if 判断","独立写出 for 循环与累加/计数","完成今天的 3 道练习并复盘"];
-const problems=[
- {name:"偶数之和",input:"10",expected:"30",starter:"#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    // 在这里写你的代码\n\n    return 0;\n}"},
- {name:"统计及格人数",input:"5\n80 55 90 45 60",expected:"3",starter:"#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    // 在这里写你的代码\n\n    return 0;\n}"},
- {name:"最大值与最小值",input:"5\n3 8 1 9 4",expected:"9 1",starter:"#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    // 在这里写你的代码\n\n    return 0;\n}"}
-];
+const starter=(body)=>"#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n"+body+"\n    return 0;\n}";
+const dayProblemSets={
+1:[
+{name:"偶数之和",description:"输入一个正整数 n，输出 1 到 n（含 n）之间所有偶数的和。",input:"10",expected:"30",hint:"遍历 1 到 n，判断偶数后累加。",starter:starter("    int n;\n    cin >> n;\n\n    // 在这里完成循环与累加")},
+{name:"统计及格人数",description:"输入 n 和 n 个成绩，输出成绩大于等于 60 的人数。",input:"5\n80 55 90 45 60",expected:"3",hint:"设置计数器，遇到及格成绩就加 1。",starter:starter("    int n, x, cnt = 0;\n    cin >> n;\n\n    // 读入 n 个成绩并统计")},
+{name:"最大值与最小值",description:"输入 n 和 n 个整数，输出最大值和最小值。",input:"5\n3 8 1 9 4",expected:"9 1",hint:"用第一个数初始化最大值和最小值。",starter:starter("    int n, x;\n    cin >> n;\n\n    // 读入第一个数初始化，再遍历剩余数据")}
+],
+2:[
+{name:"数组求和",description:"输入 n 和 n 个整数，输出所有元素的总和。",input:"5\n2 4 1 3 5",expected:"15",hint:"先读入数组，再用循环累加 a[i]。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 求数组元素总和")},
+{name:"统计偶数个数",description:"输入 n 和 n 个整数，统计其中偶数的个数。",input:"6\n1 2 4 7 8 9",expected:"3",hint:"遍历数组，判断 a[i] % 2 是否为 0。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 统计偶数个数")},
+{name:"数组最大值与最小值",description:"输入 n 和 n 个整数，输出最大值和最小值。",input:"5\n3 8 1 9 4",expected:"9 1",hint:"用 a[0] 初始化，循环从下标 1 开始。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 查找最大值和最小值")}
+],
+3:[
+{name:"字符串长度",description:"输入一个不含空格的单词，输出它的长度。",input:"hello",expected:"5",hint:"读入 string 后使用 size()。",starter:starter("    string s;\n    cin >> s;\n\n    // 输出字符串长度")},
+{name:"统计数字字符",description:"输入一整行字符串，统计其中数字字符的个数。",input:"a1b23c",expected:"3",hint:"用 getline 读整行，遍历每个字符并判断是否在 '0' 到 '9' 之间。",starter:starter("    string s;\n    getline(cin, s);\n\n    // 统计数字字符")},
+{name:"小写字母转大写",description:"输入一整行字符串，将其中的小写字母转换成大写后输出。",input:"Hello csp 120!",expected:"HELLO CSP 120!",hint:"小写字母范围是 'a' 到 'z'，可利用字符编码差值转换。",starter:starter("    string s;\n    getline(cin, s);\n\n    // 遍历并转换小写字母")}
+]
+};
+let problems=dayProblemSets[1];
 let activeProblem=0, remaining=7200, timerId=null, elapsed=0;
 const $=id=>document.getElementById(id);
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
@@ -183,14 +197,14 @@ function paintTimer(){$("clock").textContent=fmt(remaining);$("timerStage").text
 $("startTimer").onclick=()=>{if(timerId||remaining<=0)return;timerId=setInterval(()=>{remaining=Math.max(0,remaining-1);elapsed++;paintTimer();if(remaining===0){clearInterval(timerId);timerId=null;alert("120 分钟完成！记得复盘今天的错题。")}},1000)};
 $("pauseTimer").onclick=()=>{clearInterval(timerId);timerId=null};
 $("resetTimer").onclick=()=>{clearInterval(timerId);timerId=null;remaining=7200;elapsed=0;paintTimer()};
-function loadProblem(i){activeProblem=i;$("problemSelect").value=i;$("editorCode").value=store.get("csp_code_"+i)||problems[i].starter;$("expectedText").textContent="本题样例输入："+problems[i].input.replace(/\n/g," / ")+"；预期输出："+problems[i].expected;$("actualOutput").value="";$("checkResult").textContent="等待你运行代码并提交结果……";showTab("editor")}
+function loadProblem(i){if(!problems.length)return;activeProblem=Math.max(0,Math.min(i,problems.length-1));$("problemSelect").value=activeProblem;const p=problems[activeProblem];$("editorCode").value=store.get("csp_code_"+selectedDay+"_"+activeProblem)||p.starter;$("expectedText").textContent="本题样例输入："+p.input.replace(/\n/g," / ")+"；预期输出："+p.expected;$("actualOutput").value="";$("checkResult").textContent="等待你运行代码并提交结果……";showTab("editor")}
 function selectProblem(v){loadProblem(Number(v))}
-$("editorCode").addEventListener("input",()=>store.set("csp_code_"+activeProblem,$("editorCode").value));
+$("editorCode").addEventListener("input",()=>store.set("csp_code_"+selectedDay+"_"+activeProblem,$("editorCode").value));
 $("saveCode").onclick=()=>{store.set("csp_code_"+activeProblem,$("editorCode").value);$("checkResult").textContent="草稿已保存到当前浏览器。"};
 $("copyCode").onclick=async()=>{try{await navigator.clipboard.writeText($("editorCode").value);$("checkResult").textContent="代码已复制。现在可以打开在线编译器粘贴运行。"}catch(e){$("checkResult").textContent="浏览器未允许自动复制，请手动选中代码复制。"}};
 function normalize(s){return s.trim().split(/\s+/).join(" ")}
 $("checkOutput").onclick=()=>{let got=normalize($("actualOutput").value),want=normalize(problems[activeProblem].expected);if(!got){$("checkResult").textContent="请先把实际运行结果粘贴进来。";return}if(got===want){$("checkResult").textContent="🎉 样例输出一致！注意：这只代表当前样例通过，不等于整道题所有测试点都通过。";solved++;store.set("csp_solved",solved);$("solved").textContent=solved;}else{$("checkResult").textContent="还不一致。检查循环边界、条件判断、累加/计数变量是否正确，再运行一次。"}};
-function addMistake(){let m={name:problems[activeProblem].name,code:$("editorCode").value.slice(0,500),date:new Date().toLocaleDateString("zh-CN")};mistakes.unshift(m);store.set("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
+function addMistake(){let m={name:"DAY "+selectedDay+" · "+problems[activeProblem].name,code:$("editorCode").value.slice(0,500),date:new Date().toLocaleDateString("zh-CN")};mistakes.unshift(m);store.set("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
 $("markWrong").onclick=addMistake;
 function renderMistakes(){$("mistakeCount").textContent=mistakes.length;if(!mistakes.length){$("mistakeList").className="empty";$("mistakeList").textContent="还没有错题。做题时遇到卡点，可以主动加入错题本。";return}$("mistakeList").className="";$("mistakeList").innerHTML=mistakes.map((m,i)=>`<div class="mistake"><b>${m.name}</b><span class="muted"> · ${m.date}</span><pre class="code" style="margin:8px 0">${escapeHtml(m.code)}</pre><button class="secondary" onclick="removeMistake(${i})">移除</button></div>`).join("")}
 function removeMistake(i){mistakes.splice(i,1);store.set("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
