@@ -177,11 +177,13 @@ const problems=[
 ];
 let activeProblem=0, remaining=7200, timerId=null, elapsed=0;
 const $=id=>document.getElementById(id);
-let completed=JSON.parse(localStorage.getItem("csp_tasks")||"[]");
-let mistakes=JSON.parse(localStorage.getItem("csp_mistakes")||"[]");
-let solved=Number(localStorage.getItem("csp_solved")||0);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+function readList(k){try{const v=JSON.parse(store.get(k)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}}
+let completed=readList("csp_tasks");
+let mistakes=readList("csp_mistakes");
+let solved=Number(store.get("csp_solved")||0);
 function renderTasks(){ $("tasks").innerHTML=tasks.map((t,i)=>`<label class="task"><input type="checkbox" ${completed.includes(i)?"checked":""} onchange="toggleTask(${i},this.checked)"><span>${t}</span></label>`).join("");$("taskCount").textContent=`${completed.length} / 4`;$("taskProgress").style.width=(completed.length/4*100)+"%";$("taskProgressText").textContent=completed.length===4?"🎉 今日任务全部点亮！":"再完成 "+(4-completed.length)+" 项就通关啦。"}
-function toggleTask(i,on){completed=on?[...new Set([...completed,i])]:completed.filter(x=>x!==i);localStorage.setItem("csp_tasks",JSON.stringify(completed));renderTasks()}
+function toggleTask(i,on){completed=on?[...new Set([...completed,i])]:completed.filter(x=>x!==i);store.set("csp_tasks",JSON.stringify(completed));renderTasks()}
 function showTab(tab){document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===tab));document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));}
 document.querySelectorAll(".nav").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
 function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
@@ -190,17 +192,17 @@ function paintTimer(){$("clock").textContent=fmt(remaining);$("timerStage").text
 $("startTimer").onclick=()=>{if(timerId||remaining<=0)return;timerId=setInterval(()=>{remaining=Math.max(0,remaining-1);elapsed++;paintTimer();if(remaining===0){clearInterval(timerId);timerId=null;alert("120 分钟完成！记得复盘今天的错题。")}},1000)};
 $("pauseTimer").onclick=()=>{clearInterval(timerId);timerId=null};
 $("resetTimer").onclick=()=>{clearInterval(timerId);timerId=null;remaining=7200;elapsed=0;paintTimer()};
-function loadProblem(i){activeProblem=i;$("problemSelect").value=i;$("editorCode").value=localStorage.getItem("csp_code_"+i)||problems[i].starter;$("expectedText").textContent="本题样例输入："+problems[i].input.replace(/\n/g," / ")+"；预期输出："+problems[i].expected;$("actualOutput").value="";$("checkResult").textContent="等待你运行代码并提交结果……";showTab("editor")}
+function loadProblem(i){activeProblem=i;$("problemSelect").value=i;$("editorCode").value=store.get("csp_code_"+i)||problems[i].starter;$("expectedText").textContent="本题样例输入："+problems[i].input.replace(/\n/g," / ")+"；预期输出："+problems[i].expected;$("actualOutput").value="";$("checkResult").textContent="等待你运行代码并提交结果……";showTab("editor")}
 function selectProblem(v){loadProblem(Number(v))}
-$("editorCode").addEventListener("input",()=>localStorage.setItem("csp_code_"+activeProblem,$("editorCode").value));
-$("saveCode").onclick=()=>{localStorage.setItem("csp_code_"+activeProblem,$("editorCode").value);$("checkResult").textContent="草稿已保存到当前浏览器。"};
+$("editorCode").addEventListener("input",()=>store.set("csp_code_"+activeProblem,$("editorCode").value));
+$("saveCode").onclick=()=>{store.set("csp_code_"+activeProblem,$("editorCode").value);$("checkResult").textContent="草稿已保存到当前浏览器。"};
 $("copyCode").onclick=async()=>{try{await navigator.clipboard.writeText($("editorCode").value);$("checkResult").textContent="代码已复制。现在可以打开在线编译器粘贴运行。"}catch(e){$("checkResult").textContent="浏览器未允许自动复制，请手动选中代码复制。"}};
 function normalize(s){return s.trim().split(/\s+/).join(" ")}
-$("checkOutput").onclick=()=>{let got=normalize($("actualOutput").value),want=normalize(problems[activeProblem].expected);if(!got){$("checkResult").textContent="请先把实际运行结果粘贴进来。";return}if(got===want){$("checkResult").textContent="🎉 样例输出一致！注意：这只代表当前样例通过，不等于整道题所有测试点都通过。";solved++;localStorage.setItem("csp_solved",solved);$("solved").textContent=solved;}else{$("checkResult").textContent="还不一致。检查循环边界、条件判断、累加/计数变量是否正确，再运行一次。"}};
-function addMistake(){let m={name:problems[activeProblem].name,code:$("editorCode").value.slice(0,500),date:new Date().toLocaleDateString("zh-CN")};mistakes.unshift(m);localStorage.setItem("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
+$("checkOutput").onclick=()=>{let got=normalize($("actualOutput").value),want=normalize(problems[activeProblem].expected);if(!got){$("checkResult").textContent="请先把实际运行结果粘贴进来。";return}if(got===want){$("checkResult").textContent="🎉 样例输出一致！注意：这只代表当前样例通过，不等于整道题所有测试点都通过。";solved++;store.set("csp_solved",solved);$("solved").textContent=solved;}else{$("checkResult").textContent="还不一致。检查循环边界、条件判断、累加/计数变量是否正确，再运行一次。"}};
+function addMistake(){let m={name:problems[activeProblem].name,code:$("editorCode").value.slice(0,500),date:new Date().toLocaleDateString("zh-CN")};mistakes.unshift(m);store.set("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
 $("markWrong").onclick=addMistake;
 function renderMistakes(){$("mistakeCount").textContent=mistakes.length;if(!mistakes.length){$("mistakeList").className="empty";$("mistakeList").textContent="还没有错题。做题时遇到卡点，可以主动加入错题本。";return}$("mistakeList").className="";$("mistakeList").innerHTML=mistakes.map((m,i)=>`<div class="mistake"><b>${m.name}</b><span class="muted"> · ${m.date}</span><pre class="code" style="margin:8px 0">${escapeHtml(m.code)}</pre><button class="secondary" onclick="removeMistake(${i})">移除</button></div>`).join("")}
-function removeMistake(i){mistakes.splice(i,1);localStorage.setItem("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
+function removeMistake(i){mistakes.splice(i,1);store.set("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 const dayLabels=["C++基础","数组基础","字符串","函数","基础综合","基础综合","基础综合","模拟","排序","排序","前缀和","前缀和","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];
 function renderDays(){$("dayGrid").innerHTML=dayLabels.map((v,i)=>`<button type="button" class="day ${i+1===todayDay?"current":""}" onclick="openDay(${i+1})" aria-label="打开第${i+1}天：${v}"><b>${i+1}</b>${v}</button>`).join("")}
@@ -210,7 +212,31 @@ function openDay(n){
  $("modalEyebrow").textContent="自由学习模式 · 第 "+n+" 天";
  $("modalTitle").textContent="DAY "+String(n).padStart(2,"0")+" · "+title;
  const body=$("modalBody");
- if(n===2){
+ if(n===3){
+  body.innerHTML=`
+  <p class="sub">本关目标：掌握 C++ string 的基本使用，能读取整行文本、访问字符、统计字符并拼接字符串。</p>
+  <div class="lesson-box"><h4>1. 什么是 string？</h4><p>string 用来存储一段文本。使用前通常写上 <b>#include &lt;string&gt;</b>，也可以直接使用万能头文件。</p><div class="code">string s = "hello";
+cout << s;</div><p>和字符 char 不同，string 可以保存多个字符。</p></div>
+  <div class="lesson-box"><h4>2. 输入一个单词和一整行</h4><div class="code">string a, b;
+cin >> a;       // 遇到空格就停止
+getline(cin, b); // 读取整行，包含空格</div><p>如果先用 cin 读数字，再 getline 读整行，记得先用 <b>cin.ignore()</b> 清掉上一行残留的换行符。</p><div class="code">int n;
+cin >> n;
+cin.ignore();
+string s;
+getline(cin, s);</div></div>
+  <div class="lesson-box"><h4>3. 字符串长度与访问</h4><div class="code">string s = "hello";
+cout << s.size(); // 5
+cout << s[0];     // h
+cout << s[s.size()-1]; // o</div><p>字符串下标也从 0 开始，最后一个字符下标是 size()-1。</p></div>
+  <div class="lesson-box"><h4>4. 遍历与常用操作</h4><div class="code">string s = "a1b2c3";
+int cnt = 0;
+for (int i = 0; i < (int)s.size(); i++) {
+    if (s[i] >= '0' && s[i] <= '9') cnt++;
+}
+cout << cnt; // 3</div><p>拼接可以用 <b>+</b> 或 <b>+=</b>；判断字符是否为数字、字母时，初期可以直接用字符范围比较。</p></div>
+  <div class="lesson-box"><h4>5. 本关练习</h4><p><b>基础：</b>输入一个单词，输出它的长度。样例：hello，输出 5。</p><p><b>进阶：</b>输入一行字符串，统计其中数字字符的个数。样例：a1b23c，输出 3。</p><p><b>挑战：</b>输入一行字符串，将其中的小写字母转换成大写后输出。提示：遍历每个字符，若在 'a' 到 'z' 之间，就减去 'a' - 'A'。</p></div>
+  <button onclick="closeDayModal();showTab('editor')">去代码实验室练习 →</button>`;
+  } else if(n===2){
  body.innerHTML=`
  <p class="sub">本关目标：理解数组为什么存在，掌握定义、下标、遍历，能独立完成求和、计数和查找。</p>
  <div class="lesson-box"><h4>1. 为什么需要数组？</h4><p>如果要存 100 个成绩，逐个写 score1、score2……非常麻烦。数组可以用一个名字存一组同类型数据。</p><div class="code">int a[5]; // 定义 5 个整数</div></div>
