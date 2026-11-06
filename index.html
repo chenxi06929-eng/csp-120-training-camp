@@ -219,7 +219,7 @@ $("markWrong").onclick=addMistake;
 function renderMistakes(){$("mistakeCount").textContent=mistakes.length;if(!mistakes.length){$("mistakeList").className="empty";$("mistakeList").textContent="还没有错题。做题时遇到卡点，可以主动加入错题本。";return}$("mistakeList").className="";$("mistakeList").innerHTML=mistakes.map((m,i)=>`<div class="mistake"><b>${m.name}</b><span class="muted"> · ${m.date}</span><pre class="code" style="margin:8px 0">${escapeHtml(m.code)}</pre><button class="secondary" onclick="removeMistake(${i})">移除</button></div>`).join("")}
 function removeMistake(i){mistakes.splice(i,1);store.set("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-const dayLabels=["C++基础","数组基础","字符串","函数","基础综合","基础综合","基础综合","模拟","排序","排序","前缀和","前缀和","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];
+const dayLabels=["C++基础","数组基础","字符串","数组遍历与统计","计数与线性查找","基础综合","基础综合","模拟","排序","排序","前缀和","前缀和","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];
 let selectedDay=1;
 const dayOneLessonHTML=$("lesson").innerHTML;
 function renderWorkspace(n){
