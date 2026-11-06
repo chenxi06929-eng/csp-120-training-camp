@@ -177,6 +177,16 @@ const dayProblemSets={
 {name:"字符串长度",description:"输入一个不含空格的单词，输出它的长度。",input:"hello",expected:"5",hint:"读入 string 后使用 size()。",starter:starter("    string s;\n    cin >> s;\n\n    // 输出字符串长度")},
 {name:"统计数字字符",description:"输入一整行字符串，统计其中数字字符的个数。",input:"a1b23c",expected:"3",hint:"用 getline 读整行，遍历每个字符并判断是否在 '0' 到 '9' 之间。",starter:starter("    string s;\n    getline(cin, s);\n\n    // 统计数字字符")},
 {name:"小写字母转大写",description:"输入一整行字符串，将其中的小写字母转换成大写后输出。",input:"Hello csp 120!",expected:"HELLO CSP 120!",hint:"小写字母范围是 'a' 到 'z'，可利用字符编码差值转换。",starter:starter("    string s;\n    getline(cin, s);\n\n    // 遍历并转换小写字母")}
+],
+4:[
+{name:"统计偶数个数",description:"输入 n 和 n 个整数，统计数组中偶数的个数。",input:"6\n1 2 4 7 8 9",expected:"3",hint:"遍历下标 0 到 n-1；如果 a[i] % 2 == 0，计数器加 1。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 统计偶数个数")},
+{name:"倒序输出数组",description:"输入 n 和 n 个整数，按照从最后一个元素到第一个元素的顺序输出。",input:"5\n3 8 1 9 4",expected:"4 9 1 8 3",hint:"循环下标从 n-1 开始，每次减 1，直到 i >= 0。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 从后往前遍历并输出")},
+{name:"统计大于平均数的元素",description:"输入 n 和 n 个整数，输出严格大于数组平均数的元素个数。",input:"5\n1 2 3 4 10",expected:"1",hint:"先求总和，再计算平均数，最后重新遍历统计。",starter:starter("    int n, a[1005], sum = 0, cnt = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) {\n        cin >> a[i];\n        sum += a[i];\n    }\n\n    // 计算平均数并统计") }
+],
+5:[
+{name:"统计数字出现次数",description:"输入 n 个整数，再输入一个要查找的数字 x，输出 x 在数组中出现的次数。",input:"6\n2 3 2 5 2 8\n2",expected:"3",hint:"遍历整个数组；每当 a[i] == x，计数器加 1。",starter:starter("    int n, a[1005], x, cnt = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n    cin >> x;\n\n    // 统计 x 出现的次数")},
+{name:"查找第一个位置",description:"输入 n 个整数和目标数字 x，输出 x 第一次出现的下标；如果不存在，输出 -1。下标从 0 开始。",input:"6\n4 7 2 7 9 1\n7",expected:"1",hint:"先令 pos = -1；从左向右查找，第一次找到后记录下标并 break。",starter:starter("    int n, a[1005], x, pos = -1;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n    cin >> x;\n\n    // 找到第一次出现的位置")},
+{name:"统计超过平均数的数字",description:"输入 n 个整数，输出严格大于平均数的元素个数。请尝试独立完成，不要把求和和统计写在同一遍循环里。",input:"5\n1 2 3 4 10",expected:"1",hint:"第一遍求 sum，第二遍计算并统计；注意平均数可以用 double。",starter:starter("    int n, a[1005], sum = 0, cnt = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) {\n        cin >> a[i];\n        sum += a[i];\n    }\n\n    // 计算平均数，再遍历统计") }
 ]
 };
 let problems=dayProblemSets[1];
@@ -232,7 +242,56 @@ function openDay(n){
  $("modalEyebrow").textContent="自由学习模式 · 第 "+n+" 天";
  $("modalTitle").textContent="DAY "+String(n).padStart(2,"0")+" · "+title;
  const body=$("modalBody");
- if(n===3){
+ if(n===5){
+  body.innerHTML=`
+  <p class="sub">本关目标：学会在数组中统计某个数字出现的次数，并进行线性查找，找到目标第一次出现的位置。</p>
+  <div class="lesson-box"><h4>1. 统计某个数字出现几次</h4><p>这类题目不是找到一次就结束，而是要把整个数组检查完。每遇到一次目标数字，计数器就加 1。</p><div class="code">int cnt = 0;
+for (int i = 0; i < n; i++) {
+    if (a[i] == x) cnt++;
+}
+cout << cnt;</div><p>注意：cnt 必须先初始化为 0；统计次数时通常不能提前 break。</p></div>
+  <div class="lesson-box"><h4>2. 线性查找：从左到右逐个找</h4><p>如果题目只要求第一次出现的位置，找到后就可以停止。数组下标从 0 开始，所以输出的是 i，而不是 i+1。</p><div class="code">int pos = -1;
+for (int i = 0; i < n; i++) {
+    if (a[i] == x) {
+        pos = i;
+        break;
+    }
+}
+cout << pos;</div><p>为什么先设 pos = -1？因为如果遍历结束都没找到，pos 仍然是 -1，正好表示不存在。</p></div>
+  <div class="lesson-box"><h4>3. break 的作用</h4><p>break 会立刻结束当前这一层循环。它适合“只找第一个”的题目，不适合“统计总次数”的题目。</p></div>
+  <div class="lesson-box"><h4>4. 两次遍历：先求和，再统计</h4><p>有些题目需要先知道整体信息，再逐个判断。例如统计大于平均数的元素：</p><div class="code">int sum = 0;
+for (int i = 0; i < n; i++) sum += a[i];
+
+double avg = (double)sum / n;
+int cnt = 0;
+for (int i = 0; i < n; i++) {
+    if (a[i] > avg) cnt++;
+}</div><p>这里强制转换成 double，避免整数除法丢掉小数部分。</p></div>
+  <div class="lesson-box"><h4>5. 本关练习</h4><p><b>基础：</b>输入数组和数字 x，统计 x 出现的次数。样例：6 / 2 3 2 5 2 8 / 2，输出 3。</p><p><b>进阶：</b>输出 x 第一次出现的下标，不存在输出 -1。样例：6 / 4 7 2 7 9 1 / 7，输出 1。</p><p><b>挑战：</b>统计数组中严格大于平均数的元素个数。样例：5 / 1 2 3 4 10，输出 1。</p></div>
+  <button onclick="closeDayModal();showTab('editor')">去代码实验室练习 →</button>`;
+ } else if(n===4){
+  body.innerHTML=`
+  <p class="sub">本关目标：熟练使用数组下标和循环遍历，能从头到尾、从尾到头访问数组元素，并完成基础统计。</p>
+  <div class="lesson-box"><h4>1. 回顾数组下标</h4><p>数组长度为 n 时，有效下标是 0 到 n-1。访问数组时，先确认循环变量不会越界。</p><div class="code">for (int i = 0; i < n; i++) {
+    cout << a[i] << " ";
+}</div></div>
+  <div class="lesson-box"><h4>2. 从后往前遍历</h4><p>如果要倒序输出，起点是 n-1，每轮让 i 减 1。循环条件要写 i >= 0。</p><div class="code">for (int i = n - 1; i >= 0; i--) {
+    cout << a[i] << " ";
+}</div><p>常见错误：写成 i > 0，会漏掉下标 0 的第一个元素。</p></div>
+  <div class="lesson-box"><h4>3. 用取模判断奇偶</h4><p>a[i] % 2 == 0 表示当前元素是偶数。统计时先定义并初始化计数器。</p><div class="code">int cnt = 0;
+for (int i = 0; i < n; i++) {
+    if (a[i] % 2 == 0) cnt++;
+}</div></div>
+  <div class="lesson-box"><h4>4. 数组题可以分多遍完成</h4><p>如果题目要求先求平均数、再统计超过平均数的元素，可以先遍历求和，再遍历计数。不要急着把所有操作挤进一个循环。</p><div class="code">int sum = 0;
+for (int i = 0; i < n; i++) sum += a[i];
+double avg = (double)sum / n;
+
+int cnt = 0;
+for (int i = 0; i < n; i++)
+    if (a[i] > avg) cnt++;</div></div>
+  <div class="lesson-box"><h4>5. 本关练习</h4><p><b>基础：</b>统计数组中偶数的个数。样例：6 / 1 2 4 7 8 9，输出 3。</p><p><b>进阶：</b>将数组倒序输出。样例：5 / 3 8 1 9 4，输出 4 9 1 8 3。</p><p><b>挑战：</b>统计严格大于平均数的元素个数。样例：5 / 1 2 3 4 10，输出 1。</p></div>
+  <button onclick="closeDayModal();showTab('editor')">去代码实验室练习 →</button>`;
+ } else if(n===3){
   body.innerHTML=`
   <p class="sub">本关目标：掌握 C++ string 的基本使用，能读取整行文本、访问字符、统计字符并拼接字符串。</p>
   <div class="lesson-box"><h4>1. 什么是 string？</h4><p>string 用来存储一段文本。使用前通常写上 <b>#include &lt;string&gt;</b>，也可以直接使用万能头文件。</p><div class="code">string s = "hello";
