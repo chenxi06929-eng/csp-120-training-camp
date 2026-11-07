@@ -187,6 +187,11 @@ const dayProblemSets={
 {name:"统计数字出现次数",description:"输入 n 个整数，再输入一个要查找的数字 x，输出 x 在数组中出现的次数。",input:"6\n2 3 2 5 2 8\n2",expected:"3",hint:"遍历整个数组；每当 a[i] == x，计数器加 1。",starter:starter("    int n, a[1005], x, cnt = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n    cin >> x;\n\n    // 统计 x 出现的次数")},
 {name:"查找第一个位置",description:"输入 n 个整数和目标数字 x，输出 x 第一次出现的下标；如果不存在，输出 -1。下标从 0 开始。",input:"6\n4 7 2 7 9 1\n7",expected:"1",hint:"先令 pos = -1；从左向右查找，第一次找到后记录下标并 break。",starter:starter("    int n, a[1005], x, pos = -1;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n    cin >> x;\n\n    // 找到第一次出现的位置")},
 {name:"统计超过平均数的数字",description:"输入 n 个整数，输出严格大于平均数的元素个数。请尝试独立完成，不要把求和和统计写在同一遍循环里。",input:"5\n1 2 3 4 10",expected:"1",hint:"第一遍求 sum，第二遍计算并统计；注意平均数可以用 double。",starter:starter("    int n, a[1005], sum = 0, cnt = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) {\n        cin >> a[i];\n        sum += a[i];\n    }\n\n    // 计算平均数，再遍历统计") }
+],
+6:[
+{name:"统计正数、负数和零",description:"输入 n 个整数，分别统计正数、负数和 0 的个数，并按“正数个数 负数个数 零的个数”的顺序输出。",input:"7\n-3 0 5 8 -1 0 2",expected:"3 2 2",hint:"准备三个计数器并全部初始化为 0；每个数只会属于三类中的一类。",starter:starter("    int n, a[1005];\n    int pos = 0, neg = 0, zero = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 遍历数组，分别统计三类数字")},
+{name:"偶数下标元素之和",description:"输入 n 个整数，只把下标为 0、2、4……的元素相加，输出总和。注意：判断的是下标是否为偶数，不是元素值是否为偶数。",input:"6\n4 7 2 9 6 1",expected:"12",hint:"在遍历时判断 i % 2 == 0，再把 a[i] 加入 sum。",starter:starter("    int n, a[1005], sum = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 只累加偶数下标对应的元素")},
+{name:"最大值及其出现次数",description:"输入 n 个整数，输出数组最大值，以及最大值一共出现了几次。",input:"7\n3 9 2 9 5 9 1",expected:"9 3",hint:"分两遍：第一遍求最大值；第二遍统计等于最大值的元素。max 初始化为 a[0]，cnt 初始化为 0。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 第一遍找最大值\n    // 第二遍统计最大值出现次数")}
 ]
 };
 let problems=dayProblemSets[1];
@@ -219,7 +224,7 @@ $("markWrong").onclick=addMistake;
 function renderMistakes(){$("mistakeCount").textContent=mistakes.length;if(!mistakes.length){$("mistakeList").className="empty";$("mistakeList").textContent="还没有错题。做题时遇到卡点，可以主动加入错题本。";return}$("mistakeList").className="";$("mistakeList").innerHTML=mistakes.map((m,i)=>`<div class="mistake"><b>${m.name}</b><span class="muted"> · ${m.date}</span><pre class="code" style="margin:8px 0">${escapeHtml(m.code)}</pre><button class="secondary" onclick="removeMistake(${i})">移除</button></div>`).join("")}
 function removeMistake(i){mistakes.splice(i,1);store.set("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-const dayLabels=["C++基础","数组基础","字符串","数组遍历与统计","计数与线性查找","基础综合","基础综合","模拟","排序","排序","前缀和","前缀和","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];
+const dayLabels=["C++基础","数组基础","字符串","数组遍历与统计","计数与线性查找","数组综合训练","基础综合","模拟","排序","排序","前缀和","前缀和","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];
 let selectedDay=1;
 const dayOneLessonHTML=$("lesson").innerHTML;
 function renderWorkspace(n){
@@ -242,7 +247,62 @@ function openDay(n){
  $("modalEyebrow").textContent="自由学习模式 · 第 "+n+" 天";
  $("modalTitle").textContent="DAY "+String(n).padStart(2,"0")+" · "+title;
  const body=$("modalBody");
- if(n===5){
+ if(n===6){
+  body.innerHTML=`
+  <p class="sub">本关目标：把数组遍历、条件判断和计数器组合起来，解决需要多个步骤的数组综合题。今天重点不是记新语法，而是学会把题目拆成清楚的步骤。</p>
+  <div class="lesson-box"><h4>1. 数组综合题的固定流程</h4><p>先读入 n，再把 n 个数存进数组；接着根据题目要求遍历数组，完成统计、筛选或比较。把“读入”和“处理”分开写，初学时更容易检查错误。</p><div class="code">int n, a[1005];
+cin >> n;
+for (int i = 0; i < n; i++) {
+    cin >> a[i];
+}
+// 数据已经全部存入数组，下面开始处理</div><p>循环条件仍然是 i &lt; n，有效下标是 0 到 n-1。</p></div>
+  <div class="lesson-box"><h4>2. 同时统计正数、负数和零</h4><p>题目要求分三类统计，就准备三个计数器。每个计数器都要先初始化为 0。使用 if、else if、else，可以保证一个数字只进入其中一类。</p><div class="code">int pos = 0, neg = 0, zero = 0;
+for (int i = 0; i < n; i++) {
+    if (a[i] > 0) pos++;
+    else if (a[i] < 0) neg++;
+    else zero++;
+}
+cout << pos << " " << neg << " " << zero;</div><p>常见错误：只声明 cnt 却没有赋初值；或者把三个条件写成互不关联的判断，导致逻辑重复。</p></div>
+  <div class="lesson-box"><h4>3. 分清“下标是偶数”和“数字是偶数”</h4><p>这是两种完全不同的判断：</p><ul><li><b>下标是偶数：</b> i % 2 == 0，选中 a[0]、a[2]、a[4]……</li><li><b>元素值是偶数：</b> a[i] % 2 == 0，不管它在数组哪个位置。</li></ul><div class="code">int sum = 0;
+for (int i = 0; i < n; i++) {
+    if (i % 2 == 0) sum += a[i];
+}</div><p>遇到“第 1、3、5 个元素”时要格外小心：题目若按人类习惯从 1 开始数，对应的数组下标就是 0、2、4。</p></div>
+  <div class="lesson-box"><h4>4. 求最大值，再统计最大值出现次数</h4><p>这类题通常拆成两遍。第一遍找最大值，第二遍统计它出现了几次。先用 a[0] 初始化，避免随便写一个可能不合适的初始值。</p><div class="code">int mx = a[0];
+for (int i = 1; i < n; i++) {
+    if (a[i] > mx) mx = a[i];
+}
+
+int cnt = 0;
+for (int i = 0; i < n; i++) {
+    if (a[i] == mx) cnt++;
+}
+cout << mx << " " << cnt;</div><p>注意：第一遍从 i = 1 开始，因为 a[0] 已经参与初始化；第二遍必须从 i = 0 开始，因为每个元素都要统计。</p></div>
+  <div class="lesson-box"><h4>5. 可运行示例：统计正数、负数和零</h4><div class="code">#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n, a[1005];
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+
+    int pos = 0, neg = 0, zero = 0;
+    for (int i = 0; i < n; i++) {
+        if (a[i] > 0) pos++;
+        else if (a[i] < 0) neg++;
+        else zero++;
+    }
+
+    cout << pos << " " << neg << " " << zero;
+    return 0;
+}</div><p>第一段循环只负责读入；第二段循环只负责分类统计。把任务拆开后，出错时就能判断问题出在输入还是判断条件。</p></div>
+  <div class="lesson-box"><h4>6. 本关练习</h4><p><b>基础：</b>分别统计正数、负数和零的个数。样例：7 / -3 0 5 8 -1 0 2，输出 3 2 2。</p><p><b>进阶：</b>求数组中偶数下标元素的和。样例：6 / 4 7 2 9 6 1，输出 12。</p><p><b>挑战：</b>输出最大值及其出现次数。样例：7 / 3 9 2 9 5 9 1，输出 9 3。</p><p>先自己写，再用网站代码实验室的样例检查。不要直接照抄提示里的完整程序。</p></div>
+  <div class="lesson-box"><h4>7. 今天的 2 小时安排</h4><ul><li>20 分钟：看懂三个计数器、下标奇偶和两次遍历。</li><li>20 分钟：手动跟踪可运行示例，写出每轮 pos、neg、zero 的变化。</li><li>60 分钟：独立完成基础、进阶、挑战三题；卡住时先写输入循环，再补判断。</li><li>20 分钟：检查初始化、i &lt; n、输出顺序，并记录最容易写错的一处。</li></ul></div>
+  <div class="lesson-box"><h4>提交前自查</h4><ul><li>所有计数器和 sum 是否初始化为 0？</li><li>最大值是否用 a[0] 初始化，且 n 是否保证大于 0？</li><li>数组访问是否只使用 0 到 n-1？</li><li>判断的是下标 i，还是元素 a[i]？有没有混淆？</li><li>多步任务是否可以拆成两遍循环？</li></ul></div>
+  <button onclick="closeDayModal();showTab('editor')">去代码实验室练习 →</button>`;
+ } else if(n===5){
   body.innerHTML=`
   <p class="sub">本关目标：学会在数组中统计某个数字出现的次数，并进行线性查找，找到目标第一次出现的位置。</p>
   <div class="lesson-box"><h4>1. 统计某个数字出现几次</h4><p>这类题目不是找到一次就结束，而是要把整个数组检查完。每遇到一次目标数字，计数器就加 1。</p><div class="code">int cnt = 0;
