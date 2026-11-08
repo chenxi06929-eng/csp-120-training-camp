@@ -192,6 +192,7 @@ const dayProblemSets={
 {name:"统计正数、负数和零",description:"输入 n 个整数，分别统计正数、负数和 0 的个数，并按“正数个数 负数个数 零的个数”的顺序输出。",input:"7\n-3 0 5 8 -1 0 2",expected:"3 2 2",hint:"准备三个计数器并全部初始化为 0；每个数只会属于三类中的一类。",starter:starter("    int n, a[1005];\n    int pos = 0, neg = 0, zero = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 遍历数组，分别统计三类数字")},
 {name:"偶数下标元素之和",description:"输入 n 个整数，只把下标为 0、2、4……的元素相加，输出总和。注意：判断的是下标是否为偶数，不是元素值是否为偶数。",input:"6\n4 7 2 9 6 1",expected:"12",hint:"在遍历时判断 i % 2 == 0，再把 a[i] 加入 sum。",starter:starter("    int n, a[1005], sum = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 只累加偶数下标对应的元素")},
 {name:"最大值及其出现次数",description:"输入 n 个整数，输出数组最大值，以及最大值一共出现了几次。",input:"7\n3 9 2 9 5 9 1",expected:"9 3",hint:"分两遍：第一遍求最大值；第二遍统计等于最大值的元素。max 初始化为 a[0]，cnt 初始化为 0。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 第一遍找最大值\n    // 第二遍统计最大值出现次数")},
+],
 7:[
 {name:"两数相加函数",description:"编写 int add(int a, int b) 函数，读入两个整数并输出它们的和。",input:"12 30",expected:"42",hint:"函数接收两个 int 参数，返回 a + b；main 中调用 add(x, y)。",starter:starter("    int x, y;\n    cin >> x >> y;\n\n    // 调用你编写的 add 函数并输出结果")},
 {name:"计算 1 到 n 的和",description:"编写 int sumToN(int n) 函数，返回 1+2+...+n。main 读入 n 并输出函数返回值。",input:"5",expected:"15",hint:"在函数内部定义 sum = 0，用 for 循环累加，最后 return sum。",starter:starter("    int n;\n    cin >> n;\n\n    // 调用 sumToN(n) 并输出结果\n\n// 在 main 函数前定义 sumToN")},
