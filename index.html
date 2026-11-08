@@ -191,7 +191,12 @@ const dayProblemSets={
 6:[
 {name:"统计正数、负数和零",description:"输入 n 个整数，分别统计正数、负数和 0 的个数，并按“正数个数 负数个数 零的个数”的顺序输出。",input:"7\n-3 0 5 8 -1 0 2",expected:"3 2 2",hint:"准备三个计数器并全部初始化为 0；每个数只会属于三类中的一类。",starter:starter("    int n, a[1005];\n    int pos = 0, neg = 0, zero = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 遍历数组，分别统计三类数字")},
 {name:"偶数下标元素之和",description:"输入 n 个整数，只把下标为 0、2、4……的元素相加，输出总和。注意：判断的是下标是否为偶数，不是元素值是否为偶数。",input:"6\n4 7 2 9 6 1",expected:"12",hint:"在遍历时判断 i % 2 == 0，再把 a[i] 加入 sum。",starter:starter("    int n, a[1005], sum = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 只累加偶数下标对应的元素")},
-{name:"最大值及其出现次数",description:"输入 n 个整数，输出数组最大值，以及最大值一共出现了几次。",input:"7\n3 9 2 9 5 9 1",expected:"9 3",hint:"分两遍：第一遍求最大值；第二遍统计等于最大值的元素。max 初始化为 a[0]，cnt 初始化为 0。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 第一遍找最大值\n    // 第二遍统计最大值出现次数")}
+{name:"最大值及其出现次数",description:"输入 n 个整数，输出数组最大值，以及最大值一共出现了几次。",input:"7\n3 9 2 9 5 9 1",expected:"9 3",hint:"分两遍：第一遍求最大值；第二遍统计等于最大值的元素。max 初始化为 a[0]，cnt 初始化为 0。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 第一遍找最大值\n    // 第二遍统计最大值出现次数")},
+7:[
+{name:"两数相加函数",description:"编写 int add(int a, int b) 函数，读入两个整数并输出它们的和。",input:"12 30",expected:"42",hint:"函数接收两个 int 参数，返回 a + b；main 中调用 add(x, y)。",starter:starter("    int x, y;\n    cin >> x >> y;\n\n    // 调用你编写的 add 函数并输出结果")},
+{name:"计算 1 到 n 的和",description:"编写 int sumToN(int n) 函数，返回 1+2+...+n。main 读入 n 并输出函数返回值。",input:"5",expected:"15",hint:"在函数内部定义 sum = 0，用 for 循环累加，最后 return sum。",starter:starter("    int n;\n    cin >> n;\n\n    // 调用 sumToN(n) 并输出结果\n\n// 在 main 函数前定义 sumToN")},
+{name:"统计数组中的偶数个数",description:"编写 int countEven(int a[], int n) 函数，返回数组中偶数的个数。",input:"6\n1 2 4 7 8 9",expected:"3",hint:"函数里设置 cnt = 0，遍历下标 0 到 n-1；满足 a[i] % 2 == 0 就 cnt++，最后返回 cnt。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 调用 countEven(a, n) 并输出结果\n\n// 在 main 函数前定义 countEven") }
+]
 ]
 };
 let problems=dayProblemSets[1];
@@ -224,7 +229,7 @@ $("markWrong").onclick=addMistake;
 function renderMistakes(){$("mistakeCount").textContent=mistakes.length;if(!mistakes.length){$("mistakeList").className="empty";$("mistakeList").textContent="还没有错题。做题时遇到卡点，可以主动加入错题本。";return}$("mistakeList").className="";$("mistakeList").innerHTML=mistakes.map((m,i)=>`<div class="mistake"><b>${m.name}</b><span class="muted"> · ${m.date}</span><pre class="code" style="margin:8px 0">${escapeHtml(m.code)}</pre><button class="secondary" onclick="removeMistake(${i})">移除</button></div>`).join("")}
 function removeMistake(i){mistakes.splice(i,1);store.set("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-const dayLabels=["C++基础","数组基础","字符串","数组遍历与统计","计数与线性查找","数组综合训练","基础综合","模拟","排序","排序","前缀和","前缀和","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];
+const dayLabels=["C++基础","数组基础","字符串","数组遍历与统计","计数与线性查找","数组综合训练","函数入门与模块化","模拟","排序","排序","前缀和","前缀和","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];
 let selectedDay=1;
 const dayOneLessonHTML=$("lesson").innerHTML;
 function renderWorkspace(n){
@@ -247,7 +252,60 @@ function openDay(n){
  $("modalEyebrow").textContent="自由学习模式 · 第 "+n+" 天";
  $("modalTitle").textContent="DAY "+String(n).padStart(2,"0")+" · "+title;
  const body=$("modalBody");
- if(n===6){
+ if(n===7){
+  body.innerHTML=`
+  <p class="sub">本关目标：学会把重复或独立的任务写成函数，掌握参数、返回值和函数调用。以后做排序、搜索、数学题时，可以把一个大问题拆成几个小函数。</p>
+  <div class="lesson-box"><h4>1. 为什么要写函数？</h4><p>如果求和、判断奇偶等代码在很多题目里反复出现，每次复制容易出错。函数可以把一段任务单独命名，主函数 main 负责安排步骤，具体计算交给对应函数。</p><div class="code">int add(int a, int b) {
+    return a + b;
+}</div><p>这段函数的名字是 add，接收两个整数 a、b，计算后把结果返回。</p></div>
+  <div class="lesson-box"><h4>2. 函数的四个组成部分</h4><ul><li><b>返回类型：</b>int 表示函数最后返回一个整数；如果不需要返回值，可以使用 void。</li><li><b>函数名：</b>例如 add，调用时要写对名字。</li><li><b>参数：</b>括号里的 a、b 是函数接收的数据。</li><li><b>函数体：</b>大括号里的代码，完成具体任务。</li></ul><p>注意：参数 a、b 是函数内部使用的变量，和 main 中同名变量不是同一个变量。</p></div>
+  <div class="lesson-box"><h4>3. return 与函数调用</h4><div class="code">int square(int x) {
+    return x * x;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    cout << square(n);
+    return 0;
+}</div><p>执行到 square(n) 时，程序进入函数，把 n 的值传给参数 x；执行 return 后，函数结束，并把结果交回调用位置。不要把 return 写成 cout：输出和返回是两件不同的事。</p></div>
+  <div class="lesson-box"><h4>4. 函数要放在 main 前面，或先写声明</h4><p>初学阶段最简单的做法是先定义函数，再写 main。若函数写在 main 后面，需要在 main 前写函数声明，告诉编译器函数的名字、参数和返回类型。</p><div class="code">int add(int a, int b); // 函数声明
+
+int main() {
+    cout << add(2, 3);
+    return 0;
+}
+
+int add(int a, int b) {
+    return a + b;
+}</div></div>
+  <div class="lesson-box"><h4>5. 可运行示例：用函数计算两数之和</h4><div class="code">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    int x, y;
+    cin >> x >> y;
+
+    int ans = add(x, y);
+    cout &lt;&lt; ans;
+    return 0;
+}</div><p>先读入 x、y，再调用 add；函数返回的结果存进 ans，最后输出。你可以用输入 12 30 手动跟踪：add 收到 12 和 30，返回 42。</p></div>
+  <div class="lesson-box"><h4>6. 数组也可以传给函数</h4><p>数组作为参数时，要把数组和长度一起传入，因为函数本身无法自动知道数组有多少个元素。</p><div class="code">int countEven(int a[], int n) {
+    int cnt = 0;
+    for (int i = 0; i &lt; n; i++) {
+        if (a[i] % 2 == 0) cnt++;
+    }
+    return cnt;
+}</div><p>这里 a[] 接收数组，n 表示有效元素个数。循环仍然是 i &lt; n，不要写 i &lt;= n。</p></div>
+  <div class="lesson-box"><h4>7. 本关练习</h4><p><b>基础：</b>编写 add 函数，输入两个整数并输出它们的和。样例：12 30，输出 42。</p><p><b>进阶：</b>编写 sumToN(int n)，返回 1 到 n 的和。样例：5，输出 15。</p><p><b>挑战：</b>编写 countEven(int a[], int n)，统计数组中的偶数个数。样例：6 / 1 2 4 7 8 9，输出 3。</p><p>每题先写函数头，再写函数体，最后回到 main 完成输入、调用和输出。</p></div>
+  <div class="lesson-box"><h4>8. 今天的 2 小时安排</h4><ul><li>20 分钟：理解返回类型、参数、return 和函数调用。</li><li>20 分钟：手动跟踪 add 示例，写出参数如何传入、结果如何返回。</li><li>60 分钟：独立完成基础、进阶、挑战三题；每题先搭 main，再补函数。</li><li>20 分钟：检查函数名、参数顺序、返回类型和循环边界，整理一处错误。</li></ul></div>
+  <div class="lesson-box"><h4>提交前自查</h4><ul><li>函数返回类型是否和 return 的数据类型一致？</li><li>需要返回结果时，是否真的写了 return，而不是只 cout？</li><li>函数调用时，参数数量和顺序是否正确？</li><li>数组参数是否同时传入 n，循环是否使用 i &lt; n？</li><li>函数是否在 main 前定义，或已经写好函数声明？</li></ul></div>
+  <button onclick="closeDayModal();showTab('editor')">去代码实验室练习 →</button>`;
+ } else if(n===6){
   body.innerHTML=`
   <p class="sub">本关目标：把数组遍历、条件判断和计数器组合起来，解决需要多个步骤的数组综合题。今天重点不是记新语法，而是学会把题目拆成清楚的步骤。</p>
   <div class="lesson-box"><h4>1. 数组综合题的固定流程</h4><p>先读入 n，再把 n 个数存进数组；接着根据题目要求遍历数组，完成统计、筛选或比较。把“读入”和“处理”分开写，初学时更容易检查错误。</p><div class="code">int n, a[1005];
