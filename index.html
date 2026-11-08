@@ -198,7 +198,6 @@ const dayProblemSets={
 {name:"计算 1 到 n 的和",description:"编写 int sumToN(int n) 函数，返回 1+2+...+n。main 读入 n 并输出函数返回值。",input:"5",expected:"15",hint:"在函数内部定义 sum = 0，用 for 循环累加，最后 return sum。",starter:starter("    int n;\n    cin >> n;\n\n    // 调用 sumToN(n) 并输出结果\n\n// 在 main 函数前定义 sumToN")},
 {name:"统计数组中的偶数个数",description:"编写 int countEven(int a[], int n) 函数，返回数组中偶数的个数。",input:"6\n1 2 4 7 8 9",expected:"3",hint:"函数里设置 cnt = 0，遍历下标 0 到 n-1；满足 a[i] % 2 == 0 就 cnt++，最后返回 cnt。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 调用 countEven(a, n) 并输出结果\n\n// 在 main 函数前定义 countEven") }
 ]
-]
 };
 let problems=dayProblemSets[1];
 let activeProblem=0, remaining=7200, timerId=null, elapsed=0;
