@@ -214,6 +214,11 @@ const dayProblemSets={
  {name:"选择排序（降序）",description:"输入 n 和 n 个整数，使用选择排序从大到小排列并输出。",input:"6\n3 -1 5 3 0 2",expected:"5 3 3 2 0 -1",hint:"每轮找最大值下标 maxIndex，比较条件使用 a[j] > a[maxIndex]。",starter:starter("    int n, a[1005];\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 使用选择排序降序排列\n\n    // 输出数组")},
  {name:"输出前 k 小的数",description:"输入 n、k 和 n 个整数，保证 1 <= k <= n，只输出从小到大排列的 k 个最小值。",input:"6 3\n7 2 9 1 5 3",expected:"1 2 3",hint:"选择排序只做前 k 轮；每轮把未排序部分最小值放到 a[i]，最后只输出前 k 个元素。",starter:starter("    int n, k, a[1005];\n    cin >> n >> k;\n    for (int i = 0; i < n; i++) cin >> a[i];\n\n    // 只进行 k 轮选择排序\n\n    // 输出前 k 个元素")}
  ],
+ 11:[
+ {name:"输出每个位置的前缀和",description:"输入 n 和 n 个整数，依次输出从第 1 个数到当前位置的累计和。",input:"5\n2 4 1 3 5",expected:"2 6 7 10 15",hint:"令 pre[0]=0；读入第 i 个数后，计算 pre[i]=pre[i-1]+x。",starter:starter("    int n;\n    long long pre[1005];\n    cin >> n;\n    pre[0] = 0;\n\n    // 读入每个数，并计算 pre[i]\n\n    // 输出 pre[1] 到 pre[n]")},
+ {name:"多次区间求和",description:"输入 n、q 和 n 个整数，接着输入 q 组 l、r（下标从 1 开始），每次输出区间 [l,r] 的元素之和。",input:"5 3\n2 4 1 3 5\n1 3\n2 5\n4 4",expected:"7\n13\n3",hint:"先建立 pre；每次查询用 pre[r]-pre[l-1]。",starter:starter("    int n, q;\n    long long pre[1005];\n    cin >> n >> q;\n    pre[0] = 0;\n\n    // 读入数组并建立前缀和\n\n    // 处理 q 次区间查询")},
+ {name:"区间平均值保留两位小数",description:"输入 n、q 和 n 个整数，接着输入 q 组 l、r，输出每个区间的平均值，保留两位小数。下标从 1 开始。",input:"5 2\n2 4 1 3 5\n1 3\n2 5",expected:"2.33\n3.25",hint:"先用前缀和求区间总和，再除以 r-l+1；转换成 double，配合 fixed 和 setprecision(2)。",starter:starter("    int n, q;\n    long long pre[1005];\n    cin >> n >> q;\n    pre[0] = 0;\n\n    // 建立前缀和\n\n    // 读取每组 l、r，计算区间平均值")}
+ ],
 
 };
 let problems=dayProblemSets[1];
@@ -270,7 +275,48 @@ function openDay(n){
  $("modalTitle").textContent="DAY "+String(n).padStart(2,"0")+" · "+title;
  const body=$("modalBody");
  
-if(n===10){
+if(n===11){
+  body.innerHTML=`
+  <p class="sub">本关目标：承接 DAY10 的排序，学习另一种高频数组技巧：前缀和。遇到多次区间求和时，不再每次从头累加，而是先预处理，再快速回答查询。</p>
+  <div class="lesson-box"><h4>1. 为什么需要前缀和？</h4><p>假设数组是 2、4、1、3、5。题目问“第 1 到第 3 个数的和”，再问“第 2 到第 5 个数的和”。如果每次都重新遍历区间，查询很多时会重复做大量工作。</p><p>前缀和就是：从第一个数开始，依次记录累计总和。记 pre[i] 表示前 i 个数的和。</p><div class="code">a：    2   4   1   3   5
+pre：  0   2   6   7  10  15</div><p>特别设置 pre[0] = 0，表示前 0 个数的和是 0。这样后面的公式会更整齐。</p></div>
+  <div class="lesson-box"><h4>2. 怎样计算前缀和？</h4><p>使用 1 开始的下标来建立前缀和：</p><div class="code">pre[0] = 0;
+for (int i = 1; i &lt;= n; i++) {
+    cin &gt;&gt; x;
+    pre[i] = pre[i - 1] + x;
+}</div><ul><li>i 从 1 开始，因为 pre[0] 已经提前设为 0。</li><li>pre[i-1] 是前面 i-1 个数的总和。</li><li>再加上当前读入的 x，就得到前 i 个数的总和。</li></ul><p>注意：这里循环条件是 i &lt;= n，因为我们使用的是 1 到 n 的下标；数组容量要能容纳 pre[n]。</p></div>
+  <div class="lesson-box"><h4>3. 核心公式：区间 [l,r] 的和</h4><p>pre[r] 包含第 1 到第 r 个数；pre[l-1] 包含第 1 到第 l-1 个数。两者相减，前面重复的部分就被抵消：</p><div class="code">区间和 = pre[r] - pre[l - 1]</div><p>例如数组 2、4、1、3、5，查询 [2,5]：</p><div class="code">pre[5] - pre[1] = 15 - 2 = 13</div><p>边界提醒：当 l=1 时，公式会变成 pre[r]-pre[0]，因为 pre[0]=0，所以不需要额外写 if。</p></div>
+  <div class="lesson-box"><h4>4. 可运行示例：回答多次区间求和</h4><div class="code">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    int n, q;
+    long long pre[1005];
+    cin &gt;&gt; n &gt;&gt; q;
+
+    pre[0] = 0;
+    for (int i = 1; i &lt;= n; i++) {
+        long long x;
+        cin &gt;&gt; x;
+        pre[i] = pre[i - 1] + x;
+    }
+
+    for (int i = 0; i &lt; q; i++) {
+        int l, r;
+        cin &gt;&gt; l &gt;&gt; r;
+        cout &lt;&lt; pre[r] - pre[l - 1] &lt;&lt; "\\n";
+    }
+    return 0;
+}</div><p>第一段循环只负责建立前缀和，第二段循环负责回答 q 次查询。每次查询只做一次减法，不需要重新遍历数组。</p><p>样例：数组为 2 4 1 3 5，查询 [1,3]、[2,5]、[4,4]，输出依次为 7、13、3。</p></div>
+  <div class="lesson-box"><h4>5. 为什么使用 long long？</h4><p>数组元素可能不大，但很多个数相加后，总和可能超过 int 的范围。前缀和保存的是累计总和，因此建议使用 long long。输入单个数时也可以直接读入 long long。</p><p>另外，区间平均值不要直接用两个整数相除，否则会发生整数除法。例如 7/3 的结果是 2，而不是 2.33。需要先转换成 double：</p><div class="code">long long sum = pre[r] - pre[l - 1];
+double avg = static_cast&lt;double&gt;(sum) / (r - l + 1);
+cout &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; avg;</div></div>
+  <div class="lesson-box"><h4>6. 本关练习与分层提示</h4><p><b>基础：输出每个位置的前缀和。</b>输入 5 和数组 2 4 1 3 5，输出 2 6 7 10 15。</p><ul><li>先令 pre[0]=0。</li><li>从 i=1 到 n，读入当前数并计算 pre[i]。</li><li>最后输出 pre[1] 到 pre[n]。</li></ul><p><b>进阶：多次区间求和。</b>输入 5 3、数组 2 4 1 3 5，再查询 [1,3]、[2,5]、[4,4]，输出 7、13、3。</p><ul><li>先把前缀和数组建好，再开始读查询。</li><li>每次读入 l、r，套用 pre[r]-pre[l-1]。</li><li>检查 l=1、l=r 等边界。</li></ul><p><b>挑战：区间平均值保留两位小数。</b>输入两组区间 [1,3]、[2,5]，输出 2.33 和 3.25。</p><ul><li>先求区间和，再除以区间长度 r-l+1。</li><li>用 static_cast&lt;double&gt; 转换，避免整数除法。</li><li>使用 fixed 和 setprecision(2) 控制小数位数。</li></ul></div>
+  <div class="lesson-box"><h4>7. 今天的 2 小时安排</h4><ul><li>20 分钟：理解 pre[i] 的含义，手算数组 2 4 1 3 5 的全部前缀和。</li><li>20 分钟：逐行阅读区间求和示例，解释 pre[0]、pre[i-1] 和 l-1 的作用。</li><li>60 分钟：独立完成前缀和输出、区间求和、区间平均值三题；先写预处理，再写查询。</li><li>20 分钟：用 l=1、l=r、负数、大数测试，复盘数组边界和整数除法。</li></ul></div>
+  <div class="lesson-box"><h4>提交前自查</h4><ul><li>是否在第一次使用前设置 pre[0]=0？</li><li>建立前缀和时，是否从 i=1 到 n，且数组能存下 pre[n]？</li><li>区间和是否写成 pre[r]-pre[l-1]？</li><li>查询的 l、r 是否满足 1≤l≤r≤n？</li><li>累计和是否使用 long long，避免 int 溢出？</li><li>求平均数时是否先转换成 double，避免整数除法？</li><li>建立前缀和与处理查询是否分成两个清楚的阶段？</li></ul></div>
+  <button onclick="closeDayModal();showTab('editor')">去代码实验室练习 →</button>
+  `;
+} else if(n===10){
   body.innerHTML="<p class=\"sub\">本关目标：承接 DAY09 的冒泡排序，学会选择排序。你将理解“每一轮先找最小值，再放到正确位置”，能独立完成升序、降序和前 k 小元素的排序。</p>\n<div class=\"lesson-box\"><h4>1. 选择排序在做什么？</h4><p>把数组分成两部分：左边是已经排好序的部分，右边是还没排好序的部分。每一轮都从右边找出最小值，把它放到左边已排序部分的末尾。</p><p>第一轮找全数组最小值，放到 a[0]；第二轮只在 a[1] 到 a[n-1] 中找最小值，放到 a[1]；依次进行。</p><div class=\"code\">int minIndex = i;\nfor (int j = i + 1; j &lt; n; j++) {\n    if (a[j] &lt; a[minIndex]) {\n        minIndex = j;\n    }\n}\nswap(a[i], a[minIndex]);</div><p><b>关键：</b>minIndex 记录的是最小值的下标，不是最小值本身。</p></div>\n<div class=\"lesson-box\"><h4>2. 手动走一遍：5 3 1 4 2</h4><ul><li>第 1 轮：在全部数字中找到 1，和 a[0] 交换，变成 1 3 5 4 2。</li><li>第 2 轮：只看后面 4 个数，找到 2，放到 a[1]，变成 1 2 5 4 3。</li><li>第 3 轮：在 5 4 3 中找到 3，放到 a[2]，变成 1 2 3 4 5。</li><li>第 4 轮：剩下 4 和 5，最小值已经在正确位置。</li></ul><p>每轮结束，左边已排序的范围增加一个元素。</p></div>\n<div class=\"lesson-box\"><h4>3. 两层循环分别负责什么？</h4><div class=\"code\">for (int i = 0; i &lt; n - 1; i++) {\n    int minIndex = i;\n    for (int j = i + 1; j &lt; n; j++) {\n        if (a[j] &lt; a[minIndex]) {\n            minIndex = j;\n        }\n    }\n    swap(a[i], a[minIndex]);\n}</div><ul><li><b>外层 i：</b>决定这一轮要把哪个位置放好。</li><li><b>minIndex = i：</b>先假设当前位置就是未排序部分的最小值。</li><li><b>内层 j：</b>从 i+1 开始检查后面的元素，发现更小的就更新 minIndex。</li><li><b>交换：</b>内层循环结束后再交换，一轮只需要交换一次。</li></ul><p>数组下标是 0 到 n-1。内层条件写 j &lt; n；如果写 j &lt;= n，就会访问 a[n] 越界。</p></div>\n<div class=\"lesson-box\"><h4>4. 可运行示例：选择排序升序排列</h4><div class=\"code\">#include &lt;bits/stdc++.h&gt;\nusing namespace std;\n\nint main() {\n    int n, a[1005];\n    cin &gt;&gt; n;\n\n    for (int i = 0; i &lt; n; i++) {\n        cin &gt;&gt; a[i];\n    }\n\n    for (int i = 0; i &lt; n - 1; i++) {\n        int minIndex = i;\n        for (int j = i + 1; j &lt; n; j++) {\n            if (a[j] &lt; a[minIndex]) {\n                minIndex = j;\n            }\n        }\n        if (minIndex != i) {\n            swap(a[i], a[minIndex]);\n        }\n    }\n\n    for (int i = 0; i &lt; n; i++) {\n        if (i &gt; 0) cout &lt;&lt; \" \";\n        cout &lt;&lt; a[i];\n    }\n    return 0;\n}</div><p>读入数组后，外层循环负责确定位置；每轮先把 minIndex 设为 i，再扫描后面的元素。找到最小值下标后，才进行交换。最后单独输出数组。n=1 时外层循环不会执行，程序仍然能正确输出唯一元素。</p><p>样例输入：5 / 5 3 1 4 2；输出：1 2 3 4 5。</p></div>\n<div class=\"lesson-box\"><h4>5. 如果要从大到小排列？</h4><p>把“找最小值”改成“找最大值”，其余结构不变：</p><div class=\"code\">int maxIndex = i;\nfor (int j = i + 1; j &lt; n; j++) {\n    if (a[j] &gt; a[maxIndex]) {\n        maxIndex = j;\n    }\n}\nswap(a[i], a[maxIndex]);</div><p>升序找最小值，降序找最大值。不要只改输出顺序，必须改变比较条件。</p></div>\n<div class=\"lesson-box\"><h4>6. 只选出前 k 小的数</h4><p>如果题目只要求最小的 k 个数，就不一定要把整个数组排完。外层只执行 k 轮，每轮把当前最小值放到前面。保证 1 ≤ k ≤ n：</p><div class=\"code\">for (int i = 0; i &lt; k; i++) {\n    int minIndex = i;\n    for (int j = i + 1; j &lt; n; j++) {\n        if (a[j] &lt; a[minIndex]) minIndex = j;\n    }\n    swap(a[i], a[minIndex]);\n}</div><p>完成后，a[0] 到 a[k-1] 就是从小到大排列的前 k 小元素。后面的部分不保证有序。</p></div>\n<div class=\"lesson-box\"><h4>7. 和 DAY09 冒泡排序有什么不同？</h4><ul><li><b>冒泡排序：</b>比较相邻两个数，符合交换条件就立即交换；一轮可能交换很多次。</li><li><b>选择排序：</b>先扫描未排序部分，记住最小值下标；扫描结束后再交换，一轮最多交换一次。</li><li>两者基础写法的时间复杂度都是 O(n²)。当前重点是看懂循环边界和交换位置，不需要死记复杂度推导。</li></ul></div>\n<div class=\"lesson-box\"><h4>8. 上次代码易错点回顾：先输入，再使用</h4><p>如果写成 <code>int best = score;</code>，但 score 还没有通过 cin 读入，那么 best 使用的就是未初始化变量，结果不可靠。正确顺序是先输入，再用输入值初始化：</p><div class=\"code\">long long score, best;\ncin &gt;&gt; score;\nbest = score;</div><p>记住：声明变量不等于变量已经有正确的值。凡是依赖另一个变量的初始化，都要确认那个变量已经赋值。</p></div>\n<div class=\"lesson-box\"><h4>9. 本关练习与分层提示</h4><p><b>基础：选择排序升序。</b>输入 n 和 n 个整数，从小到大输出。样例：5 / 5 3 1 4 2，输出 1 2 3 4 5。</p><ul><li>先写读入数组的循环。</li><li>每轮令 minIndex = i，再从 i+1 扫描到 n-1。</li><li>检查：交换写在内层循环结束之后。</li></ul><p><b>进阶：选择排序降序。</b>输入 6 个整数，从大到小输出。样例：6 / 3 -1 5 3 0 2，输出 5 3 3 2 0 -1。</p><ul><li>复制基础题的循环结构。</li><li>将 minIndex 改为 maxIndex，并把比较条件改成 a[j] &gt; a[maxIndex]。</li><li>检查：负数和重复数字都要处理正确。</li></ul><p><b>挑战：输出前 k 小的数。</b>输入 n、k 和 n 个整数，保证 1 ≤ k ≤ n，只输出从小到大排列的 k 个最小值。样例：6 3 / 7 2 9 1 5 3，输出 1 2 3。</p><ul><li>外层循环只需要执行 k 轮。</li><li>每轮仍然从 i+1 扫描到 n-1。</li><li>只输出 a[0] 到 a[k-1]，不要误以为剩余部分也已经排好序。</li></ul></div>\n<div class=\"lesson-box\"><h4>10. 今天的 2 小时安排</h4><ul><li>20 分钟：理解已排序部分、未排序部分、minIndex 和交换。</li><li>20 分钟：手动跟踪 5 3 1 4 2，每轮写出 i、minIndex 和数组变化。</li><li>60 分钟：独立完成升序、降序、前 k 小三题；先搭输入，再写循环，最后输出。</li><li>20 分钟：用 n=1、含重复数、含负数的样例检查；复盘 minIndex 初始化和循环边界。</li></ul></div>\n<div class=\"lesson-box\"><h4>提交前自查</h4><ul><li>每轮开始时是否重新令 minIndex = i？</li><li>内层循环是否从 i+1 开始，并使用 j &lt; n？</li><li>是否在扫描结束后才交换，而不是每次发现更小时就交换？</li><li>升序找最小值，降序找最大值，比较符号是否正确？</li><li>n=1 时是否不会越界？k 是否保证在 1 到 n 之间？</li><li>使用 score、best 等变量前，是否已经通过输入或赋值初始化？</li><li>输出数量、顺序和空格是否符合题意？</li></ul></div>\n<button onclick=\"closeDayModal();showTab('editor')\">去代码实验室练习 →</button>";
  } else if(n===9){
   body.innerHTML=`<p class="sub">本关目标：理解排序的作用，掌握冒泡排序的基本写法，能够把一组整数按升序、降序排列，并利用排好序的数组解决简单问题。</p>
