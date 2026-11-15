@@ -264,7 +264,7 @@ $("markWrong").onclick=addMistake;
 function renderMistakes(){$("mistakeCount").textContent=mistakes.length;if(!mistakes.length){$("mistakeList").className="empty";$("mistakeList").textContent="还没有错题。做题时遇到卡点，可以主动加入错题本。";return}$("mistakeList").className="";$("mistakeList").innerHTML=mistakes.map((m,i)=>`<div class="mistake"><b>${m.name}</b><span class="muted"> · ${m.date}</span><pre class="code" style="margin:8px 0">${escapeHtml(m.code)}</pre><button class="secondary" onclick="removeMistake(${i})">移除</button></div>`).join("")}
 function removeMistake(i){mistakes.splice(i,1);store.set("csp_mistakes",JSON.stringify(mistakes));renderMistakes()}
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-const dayLabels=["C++基础","数组基础","字符串","数组遍历与统计","计数与线性查找","数组综合训练","函数入门与模块化","模拟","排序","排序","前缀和","前缀和进阶","差分","二分","二分","STL","STL","DFS","BFS","贪心","贪心","贪心","DP入门","DP入门","DP入门","背包","图论","图论","并查集","综合题","综合题","真题","真题","真题","真题","真题","真题","模拟考","模拟考","复盘","考试准备"];
+const dayLabels=["C++基础","数组基础","字符串","数组遍历与统计","计数与线性查找","数组综合训练","函数入门与模块化","模拟基础","排序与sort（选学）","排序应用（选学）","前缀和（选学）","计数前缀和（选学）","差分（选学）","二分查找（选学）","边界与复杂度（选学）","数据类型与long long","字符串遍历与字符分类","字符串计数与频次","字符串拆分与数字解析","多组数据与数组综合","位运算基础","二进制与平衡数","异或与集合判断","数学公式与循环模拟","浮点数与精度处理","查表与最近值","二维表格与下标映射","数值计算与积分模拟","状态模拟与边界处理","vector与sort实用用法","T1综合模拟一","T1综合模拟二","T1变式训练：字符串","T1变式训练：数学","T1变式训练：位运算","T1综合限时训练一","T1综合限时训练二","历年T1真题一","历年T1真题二","历年T1真题三","考前真题复盘"];
 let selectedDay=1;
 const dayOneLessonHTML=$("lesson").innerHTML;
 function renderWorkspace(n){
