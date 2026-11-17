@@ -236,6 +236,11 @@ const dayProblemSets={
 {name:"银行家舍入规则模拟（整数输入版）",description:"每个数据给出整数部分 a 和小数位 b（0～9）。分别按普通四舍五入、银行家舍入计算结果。这里先练规则，不涉及字符串解析。",input:"4\n7 5\n0 0\n13 9\n2026 5",expected:"8 0 14 2027\n8 0 14 2026",hint:"普通规则看 b 是否至少为 5；银行家规则要单独处理 b==5，再看 a 的奇偶性。",starter:starter("    int n;\n    cin >> n;\n    int ordinary[105], banker[105];\n\n    for (int i = 0; i < n; i++) {\n        int a, b;\n        cin >> a >> b;\n        // 分别计算普通四舍五入和银行家舍入\n    }\n\n    // 先输出 ordinary 数组，再换行输出 banker 数组")},
 {name:"统计两种舍入结果不同的次数",description:"输入 n 组整数部分 a 和小数位 b，统计普通四舍五入与银行家舍入结果不同的数据有多少组。",input:"5\n8 5\n7 5\n13 5\n2026 5\n9 6",expected:"2",hint:"每组数据分别算出两个结果；只有结果不相等时，计数器才加 1。注意 cnt 从 0 开始。",starter:starter("    int n, cnt = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) {\n        int a, b;\n        cin >> a >> b;\n        // 计算两种舍入结果，并判断是否不同\n    }\n    cout << cnt;")},
 {name:"查找距离 z 最近的表格横坐标",description:"输入 k、整数 z，以及 k 个严格递增的整数横坐标。输出距离 z 最近的横坐标；若距离相同，输出较小的横坐标。",input:"5 5\n0 2 4 6 8",expected:"4",hint:"先用 x[0] 初始化最佳答案和最小距离，再遍历其余横坐标。距离相等时保留较小值。",starter:starter("    int k, z, x[1005];\n    cin >> k >> z;\n    for (int i = 0; i < k; i++) cin >> x[i];\n\n    int best = 0;\n    int bestDist = abs(z - x[0]);\n    for (int i = 1; i < k; i++) {\n        int d = abs(z - x[i]);\n        // 如果当前距离更小，更新 best 和 bestDist\n    }\n    cout << x[best];")}
+],
+16:[
+{name:"long long 大数求和",description:"输入 n 和 n 个非负整数，每个数不超过 10^9，输出它们的总和。注意总和可能超过 int 的范围。",input:"5\n1000000000 1000000000 1000000000 1000000000 1000000000",expected:"5000000000",hint:"提示1：sum 从 0 初始化；提示2：sum 和每个输入值都用 long long；提示3：不要只把输入变量改成 long long，却仍用 int 保存总和。",starter:starter("    int n;\n    cin >> n;\n    long long sum = 0;\n    for (int i = 0; i < n; i++) {\n        long long x;\n        cin >> x;\n        // 把 x 累加到 sum\n    }\n    cout << sum;")},
+{name:"计算平均数（保留两位小数）",description:"输入 n 个整数，输出它们的平均数，保留两位小数。",input:"4\n1 2 2 3",expected:"2.00",hint:"提示1：先用 long long 求和；提示2：把 sum 转成 double 再除以 n；提示3：用 fixed 和 setprecision(2) 控制两位小数。",starter:starter("    int n;\n    cin >> n;\n    long long sum = 0;\n    for (int i = 0; i < n; i++) {\n        long long x;\n        cin >> x;\n        sum += x;\n    }\n    double avg = (double)sum / n;\n    // 使用 fixed 和 setprecision(2) 输出 avg")},
+{name:"普通四舍五入：使用 round()",description:"输入 n 个非负、保留一位小数的实数（例如 7.5），按普通四舍五入取整并输出。这里只练普通四舍五入，不要求银行家舍入。",input:"4\n7.5\n0.0\n13.9\n2026.5",expected:"8 0 14 2027",hint:"提示1：题面每个数是一个完整小数 token，直接用 double 读取；提示2：调用 round(x)；提示3：输出前可将结果转成 long long。",starter:starter("    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++) {\n        double x;\n        cin >> x;\n        // 输出 round(x)，注意各结果之间的空格\n    }")}
 ]
 };
 let problems=dayProblemSets[1];
@@ -297,7 +302,88 @@ function openDay(n){
  
  if(n===15){
   body.innerHTML="\n<p class=\"sub\">本关目标：拿到一道 T1 题时，先把题目拆成输入、输出、规则、数据范围和边界情况，再开始写代码。今天用银行家舍入规则练习把文字条件变成 if 判断。</p>\n<div class=\"lesson-box\"><h4>1. T1 读题先抓五件事</h4><ol><li><b>要算什么：</b>最后要求输出一个数、多个答案，还是字符串？</li><li><b>输入怎么排：</b>先读哪些数据？是每组交替输入，还是先读完一类再读另一类？</li><li><b>规则是什么：</b>把“如果……否则……”整理成分支条件。</li><li><b>数据范围多大：</b>决定用 int、long long、double，还是 string 保存。</li><li><b>输出有什么要求：</b>行数、空格、小数位数、末尾的 0 是否必须保留？</li></ol><p>例如《集合》明确说先输入全部 S，再输入全部 T；如果误以为 S、T 每组交替输入，后面的数据就会全部错位。</p></div>\n<div class=\"lesson-box\"><h4>2. 把文字规则整理成判断表</h4><p>银行家舍入的关键只有三种情况：</p><ul><li>b &lt; 5：两种方法都取 a。</li><li>b &gt; 5：两种方法都取 a+1。</li><li>b == 5：普通四舍五入取 a+1；银行家舍入看 a 的奇偶性，a 为偶数取 a，a 为奇数取 a+1。</li></ul><p>写代码前先列出分支，可以避免把 b==5 漏掉，或把奇偶判断写反。</p></div>\n<div class=\"lesson-box\"><h4>3. 边界测试不是随便挑几个数</h4><p>根据条件变化的位置，专门测试边界：</p><ul><li>b=4、b=5、b=6：检查分支交界。</li><li>a 为偶数、a 为奇数：检查银行家舍入的平局规则。</li><li>n=1：检查最少数据时循环是否正常。</li><li>查表距离相等：检查是否按题目要求选择较小的横坐标。</li><li>输出 0.500：检查是否误把字符串格式变成 0.5。</li></ul><p>测试点要围绕规则变化处设计，而不是只用普通数字。</p></div>\n<div class=\"lesson-box\"><h4>4. 可运行示例：先把舍入规则单独练熟</h4><p>为了暂时不被字符串拆分分散注意力，本例把整数部分 a 和小数位 b 分开输入。DAY19 再学习如何从 2026.5 这样的字符串中提取它们。</p><div class=\"code\">#include &lt;bits/stdc++.h&gt;\nusing namespace std;\n\nint main() {\n    int n;\n    cin &gt;&gt; n;\n    int ordinary[105], banker[105];\n\n    for (int i = 0; i &lt; n; i++) {\n        int a, b;\n        cin &gt;&gt; a &gt;&gt; b;\n\n        ordinary[i] = a;\n        if (b &gt;= 5) ordinary[i]++;\n\n        banker[i] = a;\n        if (b &gt; 5) banker[i]++;\n        else if (b == 5 &amp;&amp; a % 2 != 0) banker[i]++;\n    }\n\n    for (int i = 0; i &lt; n; i++) {\n        if (i) cout &lt;&lt; \" \";\n        cout &lt;&lt; ordinary[i];\n    }\n    cout &lt;&lt; endl;\n\n    for (int i = 0; i &lt; n; i++) {\n        if (i) cout &lt;&lt; \" \";\n        cout &lt;&lt; banker[i];\n    }\n    return 0;\n}</div><p><b>逐段理解：</b>先读 n；每轮读入一组 a、b；普通舍入只看 b 是否至少为 5；银行家舍入额外处理 b==5 且 a 为奇数的情况；最后按题目要求输出两行。两个数组都要在每个位置写入结果，不能只算其中一组。</p></div>\n<div class=\"lesson-box\"><h4>5. 把四道已分析的 T1 题映射到知识点</h4><ul><li><b>集合：</b>留意所有 S 与所有 T 的输入顺序；再判断集合本身和异或结果。</li><li><b>平衡数：</b>只统计最高位 1 到最低位，不把补位的前导 0 算进去。</li><li><b>银行家舍入：</b>重点检查 b==5，以及 a 的奇偶性。</li><li><b>流程规划：</b>先算总平均值和标准差，再计算 z，最后查最近点；距离相等选较小的 x，输出函数值时保留原来的三位小数。</li></ul><p>这些题都不是看到标题就套模板。先确认输入顺序、规则边界和输出格式，再决定用什么代码。</p></div>\n<div class=\"lesson-box\"><h4>6. 本关独立练习</h4><p><b>基础：</b>完成“银行家舍入规则模拟（整数输入版）”，输出普通舍入和银行家舍入两行结果。</p><p><b>进阶：</b>统计 n 组数据中，两种舍入结果不同的次数。重点检查 b 不等于 5、b 等于 5 且 a 为奇数、b 等于 5 且 a 为偶数三类。</p><p><b>挑战：</b>在严格递增的整数表格中，找到离 z 最近的横坐标；如果左右距离相同，选择较小值。先用整数练习，之后再迁移到 double。</p><p>题目样例和代码起始框已经放入今天的闯关列表，先独立完成，不要直接照抄课堂示例。</p></div>\n<div class=\"lesson-box\"><h4>7. 今天的 2 小时安排</h4><ul><li>20 分钟：整理 T1 读题五件事，画出银行家舍入判断表。</li><li>20 分钟：逐行跟踪示例代码，手算 b=4、5、6 和 a 奇偶两种情况。</li><li>60 分钟：独立完成基础、进阶、挑战三题；先写输入，再写判断，最后处理输出。</li><li>20 分钟：用边界数据测试，记录一次错误以及它为什么发生。</li></ul></div>\n<div class=\"lesson-box\"><h4>提交前自查</h4><ul><li>输入顺序是否和题面完全一致？有没有把分组输入误读成交替输入？</li><li>所有计数器是否初始化？数组是否只访问有效下标？</li><li>条件分支是否覆盖边界值，例如 4、5、6？</li><li>相等时的处理是否符合题目指定的优先规则？</li><li>输出行数、空格、小数位数和末尾 0 是否正确？</li><li>是否用最小数据量和边界数据做过测试？</li></ul></div>\n<button onclick=\"closeDayModal();showTab('editor')\">去代码实验室练习 →</button>";
- } else if(n===14){
+ 
+} else if(n===16){
+  body.innerHTML = `
+  <p class="sub">本关目标：能根据数据范围选择 int、long long、double；理解整数除法；会用 round() 完成普通四舍五入，并能分清它和银行家舍入的区别。今天重点修正最近练习中出现的变量声明、类型转换和输入格式问题。</p>
+  <div class="lesson-box"><h4>1. 先认识三种常用数值类型</h4>
+  <p><b>int：</b>存普通整数，例如人数、下标、次数。在常见的 32 位 C++ 环境中，范围约为 -21 亿到 21 亿。</p>
+  <p><b>long long：</b>存更大的整数，例如很多数相加后的总和。范围约为 -9×10^18 到 9×10^18。只要题目可能让总和超过 int，就要考虑 long long。</p>
+  <p><b>double：</b>存带小数的数，例如 7.5、平均数、开平方结果。它是近似表示，不要随意用 == 判断两个复杂计算得到的小数是否完全相等。</p>
+  <p>记忆：下标和计数常用 int；大整数和大总和用 long long；需要小数计算用 double。</p></div>
+  <div class="lesson-box"><h4>2. 一个特别容易丢分的坑：整数除法</h4>
+  <p>如果两个参与除法的数都是整数，C++ 会先做整数除法，小数部分直接丢掉：</p>
+  <div class="code">cout &lt;&lt; 5 / 10;       // 结果是 0
+  cout &lt;&lt; 5 / 10.0;     // 结果是 0.5</div>
+  <p>所以，如果把整数部分 a 和小数位 b 分开保存，组合成小数时要写 <b>a + b / 10.0</b>，不能写 a + b / 10。</p>
+  <p>求平均数也一样：<b>double avg = (double)sum / n;</b>。先把 sum 转成 double，才能保留小数。</p></div>
+  <div class="lesson-box"><h4>3. 你想用的 round()，普通四舍五入完全可以用</h4>
+  <p>先包含 <b>&lt;cmath&gt;</b>（使用 bits/stdc++.h 也可以），然后调用 <b>round(x)</b>。它返回最接近的整数值；当正数恰好是 x.5 时，会向上取整。</p>
+  <div class="code">round(7.4)    // 7
+  round(7.5)    // 8
+  round(7.9)    // 8
+  round(2026.5) // 2027</div>
+  <p><b>注意：</b>round() 是普通的“遇到 .5 就远离 0 舍入”，不是银行家舍入。因此 round(2026.5) 得到 2027，而银行家舍入要得到 2026。</p>
+  <p>如果原题输入就是 <b>7.5</b> 这样的一个完整小数，直接 <b>double x; cin &gt;&gt; x;</b>，再用 round(x)。不要把它误当成两个整数读入。</p></div>
+  <div class="lesson-box"><h4>4. 对照你刚才的代码，逐个修正</h4>
+  <ul>
+    <li><b>double x[i]</b> 不是“声明一个临时小数”。如果每轮只处理一个数，写 <b>double x;</b>；如果确实要数组，先在循环外写 <b>double x[105];</b>。</li>
+    <li><b>a[i] + b[i] / 10</b> 会发生整数除法。拆分输入时应写 <b>a[i] + b[i] / 10.0</b>。</li>
+    <li>普通四舍五入可以写 <b>round(value)</b>。银行家舍入仍要单独判断：b&gt;5 进位；b==5 时只有 a 为奇数才进位。</li>
+    <li>如果题面输入是 <b>7.5</b>，就读一个 double；只有输入真的写成 <b>7 5</b> 时，才用 cin 分别读 a 和 b。</li>
+    <li>一行结果全部输出完，再写 <b>cout &lt;&lt; endl;</b>。不要把换行放进循环，否则每个数都会单独占一行。</li>
+  </ul></div>
+  <div class="lesson-box"><h4>5. 可运行示例：按题面读取小数，使用 round()</h4>
+  <div class="code">#include &lt;bits/stdc++.h&gt;
+  using namespace std;
+
+  int main() {
+      int n;
+      cin &gt;&gt; n;
+      long long ans[105];
+
+      for (int i = 0; i &lt; n; i++) {
+          double x;
+          cin &gt;&gt; x;
+          ans[i] = (long long)round(x);
+      }
+
+      for (int i = 0; i &lt; n; i++) {
+          if (i &gt; 0) cout &lt;&lt; " ";
+          cout &lt;&lt; ans[i];
+      }
+      cout &lt;&lt; endl;
+      return 0;
+  }</div>
+  <p><b>逐段理解：</b>输入的每个数都是一个完整小数，所以每轮用 double x 接收；round(x) 负责普通四舍五入；结果存进 long long 数组，最后统一输出一行。这个示例只完成原题的第一行普通四舍五入，不会把银行家舍入误当成 round()。</p></div>
+  <div class="lesson-box"><h4>6. 如果你把 a、b 拆开存，应该怎样组合？</h4>
+  <div class="code">double value = a + b / 10.0;
+  long long ordinary = (long long)round(value);
+
+  long long banker = a;
+  if (b &gt; 5 || (b == 5 &amp;&amp; a % 2 != 0)) {
+      banker++;
+  }</div>
+  <p>这段只适用于输入已经拆成两个整数 a、b 的练习版。普通四舍五入使用 round()；银行家舍入使用奇偶判断。原题的 7.5 字符串拆分会在后面的字符串专题再系统练习。</p></div>
+  <div class="lesson-box"><h4>7. 本关独立练习与分层提示</h4>
+  <p><b>基础：long long 大数求和。</b>先尝试只用 int 写，观察为什么总和可能装不下；再把输入变量和 sum 都改成 long long。</p>
+  <p><b>进阶：平均数保留两位小数。</b>提示1：先求和；提示2：检查 sum / n 是否发生整数除法；提示3：用 (double)sum / n，并用 fixed、setprecision(2) 输出。</p>
+  <p><b>挑战：普通四舍五入。</b>提示1：每个 7.5 都用一个 double 读取；提示2：调用 round(x)；提示3：检查 7.4、7.5、7.6 三个边界。不要把银行家舍入的特殊规则套到 round() 上。</p>
+  <p>三道题的输入样例和代码起始框已加入今天的闯关区。先自己补完，再看提示，不要直接复制课堂示例。</p></div>
+  <div class="lesson-box"><h4>8. 今天的 2 小时安排</h4>
+  <ul><li>20 分钟知识点：分清 int、long long、double，手算 5/10 和 5/10.0。</li>
+  <li>20 分钟看代码：逐行跟踪 round() 示例，确认每个变量的类型和输入格式。</li>
+  <li>60 分钟独立编程：完成大数求和、平均数、普通四舍五入三题；卡住先写输入和循环骨架。</li>
+  <li>20 分钟复盘：用边界数据测试，记录一次类型或输入错误，并解释原因。</li></ul></div>
+  <div class="lesson-box"><h4>提交前自查</h4>
+  <ul><li>每个变量是否声明为合适的类型？大总和是否使用 long long？</li>
+  <li>需要小数的除法，是否至少有一个操作数是 double？</li>
+  <li>数组是否在循环外正确声明？下标是否只访问 0 到 n-1？</li>
+  <li>题面给 7.5 时，是否读取一个 double，而不是两个 int？</li>
+  <li>round() 是否只用于普通四舍五入？银行家舍入是否单独判断？</li>
+  <li>换行是否放在整行输出之后？是否用 n=1 和边界数测试？</li></ul></div>
+  <button onclick="closeDayModal();showTab('editor')">去代码实验室练习 →</button>`;
+} else if(n===14){
   body.innerHTML="\n<p class=\"sub\">本关目标：在<strong>已经排好序</strong>的数组中，使用二分查找快速定位目标值；能处理多次查询，并理解“找到任意一个”和“找到第一次出现的位置”有什么区别。</p>\n<div class=\"lesson-box\"><h4>1. 二分查找解决什么问题？</h4><p>如果数组没有排序，通常只能从头到尾逐个找，这叫线性查找。若数组已经按从小到大排列，就可以看中间的数：目标比中间值大，只需要看右半边；目标比中间值小，只需要看左半边。</p><p><b>最重要的前提：数组必须有序。</b>不能对一个乱序数组直接使用二分查找，否则可能把真正的答案所在区间丢掉。</p><p>每查一次就排除大约一半候选位置，因此查找速度是 O(log n)，比逐个检查的 O(n) 更快。</p></div>\n<div class=\"lesson-box\"><h4>2. 先把查找范围写清楚</h4><p>今天统一使用闭区间 <b>[l,r]</b>，也就是左右两端都可能是答案。数组下标从 0 开始，所以初始值是：</p><div class=\"code\">int l = 0, r = n - 1;</div><p>只要 <b>l &lt;= r</b>，区间里就还有候选位置。中间位置写成：</p><div class=\"code\">int mid = l + (r - l) / 2;</div><p>这种写法比 (l+r)/2 更稳妥，可以降低 l+r 很大时整数溢出的风险。</p></div>\n<div class=\"lesson-box\"><h4>3. 比较中间值，丢掉不可能的一半</h4><ul><li>如果 a[mid] == x：找到目标，记录答案。</li><li>如果 a[mid] &lt; x：目标只可能在右边，令 <b>l = mid + 1</b>。</li><li>如果 a[mid] &gt; x：目标只可能在左边，令 <b>r = mid - 1</b>。</li></ul><p>特别注意：这里必须跨过 mid，所以是 mid+1 或 mid-1。若写成 l=mid 或 r=mid，区间有时不会缩小，循环可能一直重复。</p><p>如果题目要求找不到时输出 -1，先写 <b>ans = -1</b>。查找结束后，ans 仍为 -1 就代表没有找到。</p></div>\n<div class=\"lesson-box\"><h4>4. 可运行示例：查找目标值的下标</h4><div class=\"code\">#include &lt;bits/stdc++.h&gt;\nusing namespace std;\n\nint main() {\n    int n, x, a[1005];\n    cin &gt;&gt; n &gt;&gt; x;\n    for (int i = 0; i &lt; n; i++) cin &gt;&gt; a[i];\n\n    int l = 0, r = n - 1, ans = -1;\n    while (l &lt;= r) {\n        int mid = l + (r - l) / 2;\n        if (a[mid] == x) {\n            ans = mid;\n            break;\n        } else if (a[mid] &lt; x) {\n            l = mid + 1;\n        } else {\n            r = mid - 1;\n        }\n    }\n\n    cout &lt;&lt; ans;\n    return 0;\n}</div><p>输入先给 n 和 x，再给已经升序排列的数组。程序输出的是下标，不是第几个元素：第一个元素下标为 0。</p></div>\n<div class=\"lesson-box\"><h4>5. 手动走一遍样例</h4><p>数组为 1、3、5、7、9、11、13，目标 x=7。初始 l=0、r=6，第一次 mid=3，a[3]=7，正好找到，输出 3。</p><p>再试目标 x=8：第一次看到 7，目标更大，于是 l=4；下一轮只在下标 4 到 6 中查找。每轮都只保留可能有答案的一半。</p></div>\n<div class=\"lesson-box\"><h4>6. 找到重复数字的第一次出现位置</h4><p>如果数组里有多个 x，普通写法找到一个就 break，只能保证找到某一个位置。若题目要求第一次出现的位置，可以在找到时先记录答案，再继续向左查：</p><div class=\"code\">if (a[mid] == x) {\n    ans = mid;\n    r = mid - 1; // 左边可能还有一个 x\n}</div><p>后续若又找到 x，就用更小的下标更新 ans。最终留下的就是第一次出现的位置。若 a[mid] 小于 x，仍然去右边；若大于 x，去左边。</p></div>\n<div class=\"lesson-box\"><h4>7. 本关练习</h4><p><b>基础：</b>在严格递增数组中查找 x，输出下标，不存在输出 -1。样例：7 7 / 1 3 5 7 9 11 13，输出 3。</p><p><b>进阶：</b>对 q 个目标值分别进行二分查找，每行输出下标或 -1。样例：6 4 / 1 3 5 7 9 11 / 7 2 11 1，输出 3、-1、5、0（每个答案单独一行）。</p><p><b>挑战：</b>在允许重复的有序数组中，找到 x 第一次出现的位置。样例：8 5 / 1 2 5 5 5 8 9 10，输出 2。</p><p>每题都先写清楚 l、r 的初值，再补 mid 和三种比较情况。不要只背代码，要能解释每次为什么可以排除一半。</p></div>\n<div class=\"lesson-box\"><h4>8. 今天的 2 小时安排</h4><ul><li>20 分钟：理解“数组有序”这个前提，以及 l、r、mid 的含义。</li><li>20 分钟：手动跟踪目标为 7 和目标为 8 的查找过程，逐轮记录 l、r、mid。</li><li>60 分钟：独立完成基础、进阶、挑战三题；卡住时先写 while 条件和三种比较分支。</li><li>20 分钟：复盘一次没找到的情况和一次重复数字的情况，检查区间是否持续缩小。</li></ul></div>\n<div class=\"lesson-box\"><h4>提交前自查</h4><ul><li>输入数组是否真的按题目要求有序？</li><li>初始区间是否是 l=0、r=n-1？</li><li>循环条件是否与闭区间一致，写成 l &lt;= r？</li><li>更新边界时是否使用 mid+1、mid-1，避免死循环？</li><li>ans 是否先初始化为 -1？每次独立查询是否重新初始化？</li><li>题目要的是下标、第一次出现位置，还是任意一个位置？</li></ul></div>\n<button onclick=\"closeDayModal();showTab('editor')\">去代码实验室练习 →</button>";
  } else if(n===13){
   body.innerHTML = '<p class="sub">本关目标：承接 DAY11、DAY12 的前缀和，学习“差分数组”。前缀和擅长快速回答区间问题；差分擅长快速处理多次区间修改。今天先把一个核心动作练熟：给区间 [l,r] 的所有元素同时加上 k。</p>' +
