@@ -257,6 +257,11 @@ const dayProblemSets={
 {name:"提取数字并组成整数",description:"输入一行混合文本，把其中所有数字字符按原顺序拼接起来；如果没有数字，输出 0。",input:"room 204, floor 3",expected:"2043",hint:"遍历字符串，遇到数字就追加到 digits；最后判断是否为空。",starter:starter("    string s, digits;\n    getline(cin, s);\n    // 提取所有数字字符\n    if (digits.empty()) cout << 0;\n    else cout << digits;")},
 {name:"统计分段数字个数",description:"输入一行由数字、空格和加号组成的表达式，输出其中有多少个完整数字段。",input:"12 + 305 + 7",expected:"3",hint:"从非数字进入数字时计数一次，用 inNumber 记录上一轮状态。",starter:starter("    string s;\n    getline(cin, s);\n    int cnt = 0;\n    bool inNumber = false;\n    // 识别每个数字段的开始\n    cout << cnt;")}
 ]
+,39:[
+{name:"历年 T1 真题二：银行家舍入与输入分组",description:"考前真题限时训练：按真实 T1 风格处理多组数据，先读懂输入分组，再完成银行家舍入。建议限时 35 分钟，独立完成后再看提示。",input:"4\n2 5\n3 5\n8 4\n7 6",expected:"2 4 8 8",hint:"先确认每行两个整数的含义；b<5、b==5、b>5 分开判断，平局时看 a 的奇偶性。",starter:starter("    int n;\n    cin >> n;\n\n    // 先读完全部数据，再按题意逐组处理")},
+{name:"真题变式：字符数字统计",description:"输入一行混合字符，输出数字字符个数与所有数字之和。训练字符串遍历、字符分类和边界处理。",input:"a1b20c305",expected:"5 8",hint:"只有 '0' 到 '9' 才是数字字符；字符转数值可利用它与 '0' 的差。",starter:starter("    string s;\n    getline(cin, s);\n\n    // 遍历字符串并完成统计")},
+{name:"真题复盘：最近值查表",description:"给定 n 个整数和目标 x，输出与 x 距离最小的数；若距离相同，输出较小者。训练绝对值、比较和 tie-break。",input:"5 10\n3 8 12 15 9",expected:"9",hint:"比较 abs(a[i]-x)；距离相同再比较数值大小。",starter:starter("    int n, x;\n    cin >> n >> x;\n\n    // 读入 n 个数，维护当前最优答案")}
+]
 };
 let problems=dayProblemSets[1];
 let activeProblem=0, remaining=7200, timerId=null, elapsed=0;
