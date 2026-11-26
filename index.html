@@ -289,6 +289,12 @@ const dayProblemSets={
 ,
 {name:"浮点误差安全比较",description:"输入两个保留三位小数的实数，若它们的差的绝对值不超过 0.001，输出 YES，否则输出 NO。",input:"1.234 1.235",expected:"YES",hint:"使用 fabs(a-b)，不要直接用 a==b 判断浮点数是否相等；比较时保留题目给定的误差范围。",starter:starter("    double a, b;\\n    cin >> a >> b;\\n    // 使用 fabs 判断误差是否在允许范围内")}
 ]
+,
+25:[
+{name:"查表与最近值",description:"先输入一个目标值，再输入一组候选值，输出与目标值距离最近的候选值；距离相等时输出较小的那个。",input:"10 5\n2 6 9 14 20",expected:"9",hint:"逐个计算绝对距离并维护当前最优值。第一项先初始化 best 和 bestDist，之后遇到距离更小，或距离相等但候选值更小时更新。",starter:starter("    long long target;\n    int n;\n    cin >> target >> n;\n    long long x;\n    // 读取 n 个候选值并维护最近值")},
+{name:"查表映射",description:"给出一个月份编号，输出该月份对应的天数。输入保证月份在 1 到 12 之间。",input:"2",expected:"28",hint:"用 13 个位置的数组，让 days[1] 表示 1 月，避免月份编号和数组下标错位。",starter:starter("    int month;\n    cin >> month;\n    int days[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};\n    // 输出 days[month]")},
+{name:"T1 查表与最近值综合",description:"输入目标分数和若干个分界值，输出距离目标分数最近的分界值；若距离相等，输出较小分界值。",input:"75 4\n60 70 80 90",expected:"70",hint:"先写清输入顺序；距离必须取绝对值；bestDist 不要初始化为 0，优先用第一项真实数据初始化。",starter:starter("    long long target;\n    int n;\n    cin >> target >> n;\n    long long x, best = 0, bestDist = 0;\n    // 读取 n 个分界值并按规则更新 best")}
+]
 
 };
 let problems=dayProblemSets[1];
@@ -351,6 +357,52 @@ function openDay(n){
  if(n===15){
   body.innerHTML="\n<p class=\"sub\">本关目标：拿到一道 T1 题时，先把题目拆成输入、输出、规则、数据范围和边界情况，再开始写代码。今天用银行家舍入规则练习把文字条件变成 if 判断。</p>\n<div class=\"lesson-box\"><h4>1. T1 读题先抓五件事</h4><ol><li><b>要算什么：</b>最后要求输出一个数、多个答案，还是字符串？</li><li><b>输入怎么排：</b>先读哪些数据？是每组交替输入，还是先读完一类再读另一类？</li><li><b>规则是什么：</b>把“如果……否则……”整理成分支条件。</li><li><b>数据范围多大：</b>决定用 int、long long、double，还是 string 保存。</li><li><b>输出有什么要求：</b>行数、空格、小数位数、末尾的 0 是否必须保留？</li></ol><p>例如《集合》明确说先输入全部 S，再输入全部 T；如果误以为 S、T 每组交替输入，后面的数据就会全部错位。</p></div>\n<div class=\"lesson-box\"><h4>2. 把文字规则整理成判断表</h4><p>银行家舍入的关键只有三种情况：</p><ul><li>b &lt; 5：两种方法都取 a。</li><li>b &gt; 5：两种方法都取 a+1。</li><li>b == 5：普通四舍五入取 a+1；银行家舍入看 a 的奇偶性，a 为偶数取 a，a 为奇数取 a+1。</li></ul><p>写代码前先列出分支，可以避免把 b==5 漏掉，或把奇偶判断写反。</p></div>\n<div class=\"lesson-box\"><h4>3. 边界测试不是随便挑几个数</h4><p>根据条件变化的位置，专门测试边界：</p><ul><li>b=4、b=5、b=6：检查分支交界。</li><li>a 为偶数、a 为奇数：检查银行家舍入的平局规则。</li><li>n=1：检查最少数据时循环是否正常。</li><li>查表距离相等：检查是否按题目要求选择较小的横坐标。</li><li>输出 0.500：检查是否误把字符串格式变成 0.5。</li></ul><p>测试点要围绕规则变化处设计，而不是只用普通数字。</p></div>\n<div class=\"lesson-box\"><h4>4. 可运行示例：先把舍入规则单独练熟</h4><p>为了暂时不被字符串拆分分散注意力，本例把整数部分 a 和小数位 b 分开输入。DAY19 再学习如何从 2026.5 这样的字符串中提取它们。</p><div class=\"code\">#include &lt;bits/stdc++.h&gt;\nusing namespace std;\n\nint main() {\n    int n;\n    cin &gt;&gt; n;\n    int ordinary[105], banker[105];\n\n    for (int i = 0; i &lt; n; i++) {\n        int a, b;\n        cin &gt;&gt; a &gt;&gt; b;\n\n        ordinary[i] = a;\n        if (b &gt;= 5) ordinary[i]++;\n\n        banker[i] = a;\n        if (b &gt; 5) banker[i]++;\n        else if (b == 5 &amp;&amp; a % 2 != 0) banker[i]++;\n    }\n\n    for (int i = 0; i &lt; n; i++) {\n        if (i) cout &lt;&lt; \" \";\n        cout &lt;&lt; ordinary[i];\n    }\n    cout &lt;&lt; endl;\n\n    for (int i = 0; i &lt; n; i++) {\n        if (i) cout &lt;&lt; \" \";\n        cout &lt;&lt; banker[i];\n    }\n    return 0;\n}</div><p><b>逐段理解：</b>先读 n；每轮读入一组 a、b；普通舍入只看 b 是否至少为 5；银行家舍入额外处理 b==5 且 a 为奇数的情况；最后按题目要求输出两行。两个数组都要在每个位置写入结果，不能只算其中一组。</p></div>\n<div class=\"lesson-box\"><h4>5. 把四道已分析的 T1 题映射到知识点</h4><ul><li><b>集合：</b>留意所有 S 与所有 T 的输入顺序；再判断集合本身和异或结果。</li><li><b>平衡数：</b>只统计最高位 1 到最低位，不把补位的前导 0 算进去。</li><li><b>银行家舍入：</b>重点检查 b==5，以及 a 的奇偶性。</li><li><b>流程规划：</b>先算总平均值和标准差，再计算 z，最后查最近点；距离相等选较小的 x，输出函数值时保留原来的三位小数。</li></ul><p>这些题都不是看到标题就套模板。先确认输入顺序、规则边界和输出格式，再决定用什么代码。</p></div>\n<div class=\"lesson-box\"><h4>6. 本关独立练习</h4><p><b>基础：</b>完成“银行家舍入规则模拟（整数输入版）”，输出普通舍入和银行家舍入两行结果。</p><p><b>进阶：</b>统计 n 组数据中，两种舍入结果不同的次数。重点检查 b 不等于 5、b 等于 5 且 a 为奇数、b 等于 5 且 a 为偶数三类。</p><p><b>挑战：</b>在严格递增的整数表格中，找到离 z 最近的横坐标；如果左右距离相同，选择较小值。先用整数练习，之后再迁移到 double。</p><p>题目样例和代码起始框已经放入今天的闯关列表，先独立完成，不要直接照抄课堂示例。</p></div>\n<div class=\"lesson-box\"><h4>7. 今天的 2 小时安排</h4><ul><li>20 分钟：整理 T1 读题五件事，画出银行家舍入判断表。</li><li>20 分钟：逐行跟踪示例代码，手算 b=4、5、6 和 a 奇偶两种情况。</li><li>60 分钟：独立完成基础、进阶、挑战三题；先写输入，再写判断，最后处理输出。</li><li>20 分钟：用边界数据测试，记录一次错误以及它为什么发生。</li></ul></div>\n<div class=\"lesson-box\"><h4>提交前自查</h4><ul><li>输入顺序是否和题面完全一致？有没有把分组输入误读成交替输入？</li><li>所有计数器是否初始化？数组是否只访问有效下标？</li><li>条件分支是否覆盖边界值，例如 4、5、6？</li><li>相等时的处理是否符合题目指定的优先规则？</li><li>输出行数、空格、小数位数和末尾 0 是否正确？</li><li>是否用最小数据量和边界数据做过测试？</li></ul></div>\n<button onclick=\"closeDayModal();showTab('editor')\">去代码实验室练习 →</button>";
  
+ } else if(n===25){ body.innerHTML=`
+<p class="sub">本关目标：学会处理“查表”和“最近值”这两类 T1 常见小模型。今天不追求复杂算法，而是训练把题目规则翻译成稳定的初始化、比较和更新。</p>
+<div class="lesson-box"><h4>1. 查表：把固定对应关系存进数组</h4><p>如果题目给出一个编号，让你输出对应结果，可以把答案提前放进数组。最容易出错的是下标：月份从 1 开始，数组下标通常从 0 开始。初学时可以开 13 个位置，让 <code>days[1]</code> 表示 1 月。</p><div class="code">int days[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+int month;
+cin &gt;&gt; month;
+cout &lt;&lt; days[month];</div><p>第 0 个位置只是占位，不参与实际月份。</p></div>
+<div class="lesson-box"><h4>2. 最近值：维护当前最优答案</h4><p>遇到“距离目标最近”的题目，先计算距离，再决定是否替换答案。第一项数据不能和 0 比较，否则可能一直无法正确更新。</p><div class="code">long long target, x;
+cin &gt;&gt; target;
+cin &gt;&gt; x;
+long long best = x;
+long long bestDist = llabs(x - target);
+
+for (int i = 1; i &lt; n; i++) {
+    cin &gt;&gt; x;
+    long long dist = llabs(x - target);
+    if (dist &lt; bestDist || (dist == bestDist &amp;&amp; x &lt; best)) {
+        best = x;
+        bestDist = dist;
+    }
+}
+cout &lt;&lt; best;</div><p>两个更新条件分别对应：距离更小；距离相等时，候选值更小。</p></div>
+<div class="lesson-box"><h4>3. 没有 llabs 时怎么办？</h4><p>可以手动计算绝对值：先令 <code>dist = x - target</code>，如果 <code>dist &lt; 0</code> 就令 <code>dist = -dist</code>。不要把负距离直接拿来比较。</p></div>
+<div class="lesson-box"><h4>4. 可运行示例：查找最近值</h4><div class="code">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main() {
+    int n;
+    long long target;
+    cin &gt;&gt; target &gt;&gt; n;
+
+    long long x, best = 0, bestDist = 0;
+    for (int i = 0; i &lt; n; i++) {
+        cin &gt;&gt; x;
+        long long dist = llabs(x - target);
+        if (i == 0 || dist &lt; bestDist || (dist == bestDist &amp;&amp; x &lt; best)) {
+            best = x;
+            bestDist = dist;
+        }
+    }
+
+    cout &lt;&lt; best;
+    return 0;
+}</div><p>用 <code>i == 0</code> 处理第一项初始化，后面的数据再按规则比较。</p></div>
+<div class="lesson-box"><h4>5. 今天的 2 小时安排</h4><ul><li>20 分钟：理解查表数组和当前最优值。</li><li>20 分钟：手算目标值 10、候选值 2、6、9、14 时 best 与 bestDist 的变化。</li><li>60 分钟：独立完成 3 道题，先写输入和初始化，再写更新条件。</li><li>20 分钟：测试第一项、距离相等、目标值命中、n=1 等边界。</li></ul></div>
+<div class="lesson-box"><h4>提交前自查</h4><ul><li>查表时编号和数组下标是否对应？</li><li>best 和 bestDist 是否用第一项真实数据初始化？</li><li>距离是否取了绝对值？</li><li>距离相等时是否按题目规则处理？</li><li>循环是否恰好读取 n 个候选值？</li><li>输出的是候选值本身，还是下标？有没有读错题意？</li></ul></div>
+<button onclick="closeDayModal();showTab('editor')">去代码实验室练习 →</button>`;
  } else if(n===24){ body.innerHTML=`
 <p class="sub">本关目标：开始处理 T1 中常见的浮点数与精度问题。今天重点不是背公式，而是学会选择 double、正确输出小数，以及用误差范围比较两个实数。</p>
 <div class="lesson-box"><h4>1. 为什么整数题和小数题不一样？</h4><p>整数可以精确保存，但很多小数在计算机中只能保存近似值。因此，浮点数题常见两个要求：输出指定小数位，以及比较时允许一定误差。</p><div class="code">double x = 1.2;
